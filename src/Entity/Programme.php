@@ -18,21 +18,22 @@ class Programme
     #[ORM\Column]
     private ?int $duree = null;
 
+    #[ORM\ManyToOne(inversedBy: 'programmes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Module $module = null;
+
     /**
      * @var Collection<int, Session>
      */
     #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'programme')]
     private Collection $sessions;
 
-    #[ORM\ManyToOne(inversedBy: 'programmes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Module $module = null;
-
     public function __construct()
     {
         $this->sessions = new ArrayCollection();
     }
 
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +47,19 @@ class Programme
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
+
+        return $this;
+    }
+
+
+    public function getModule(): ?Module
+    {
+        return $this->module;
+    }
+
+    public function setModule(?Module $module): static
+    {
+        $this->module = $module;
 
         return $this;
     }
@@ -76,18 +90,6 @@ class Programme
                 $session->setProgramme(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getModule(): ?Module
-    {
-        return $this->module;
-    }
-
-    public function setModule(?Module $module): static
-    {
-        $this->module = $module;
 
         return $this;
     }

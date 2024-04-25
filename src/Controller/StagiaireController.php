@@ -12,7 +12,7 @@ class StagiaireController extends AbstractController
     public function index(): Response
     {
         return $this->render('stagiaire/index.html.twig', [
-            'controller_name' => 'StagiaireController',
+            
         ]);
     }
 }
