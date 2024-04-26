@@ -5,7 +5,7 @@
 {% block body %}
 
 {% for session in sessions %}
-    <br> {{ 'Nom de la session: '~ session.nomSession }} <br>
+    <br> <a href="{{ path('app_interface') }}">{{ session.nomSession }}</a> <br>
     {{ 'Nombre de places: '~ session.nbPlaces}} <br>
     {{ 'Date de début de session: '~ session.debut}} <br>
     {{ 'Date de fin de session: '~ session.fin }} <br>

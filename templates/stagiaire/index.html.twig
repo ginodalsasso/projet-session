@@ -6,6 +6,10 @@
     <h1>Liste des stagiaires</h1>
 
         {% for stagiaire in stagiaires %}
-            {{ stagiaire.nom ~' '~ stagiaire.prenom ~' '~ stagiaire.getNaissance ~' '~ stagiaire.email ~' '~ stagiaire.telephone }} <br>
+            {{ stagiaire.nom ~' '~ stagiaire.prenom ~' '~ stagiaire.getNaissance ~' '~ stagiaire.email ~' '~ stagiaire.telephone }} 
+            
+            {% for session in stagiaire.sessions %}
+                {{ session.nomSession }}
+            {% endfor %} <br>
         {% endfor %}
 {% endblock %}

@@ -12,6 +12,19 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav>
+            <ul>
+                <li><a href="{{ path('app_session') }}">Liste des sessions</a></li>
+                <li><a href="{{ path('app_addSession') }}">Créer une session</a></li>
+                <li><a href="{{ path('app_formation') }}">Liste des formations</a></li>
+                <li><a href="{{ path('app_module') }}">Liste des modules</a></li>
+                <li><a href="{{ path('app_stagiaire') }}">Liste des stagiaires</a></li>
+            </ul>
+        </nav>
+
+        {% block body %}
+
+        
+        {% endblock %}
     </body>
 </html>
