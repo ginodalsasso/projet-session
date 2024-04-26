@@ -5,17 +5,22 @@
 {% block body %}
 
 {% for session in sessions %}
-    {{ session.nomSession ~' '~ session.nbPlaces ~' '~ session.debut ~' '~ session.fin }} 
-    {% for stagiaire in session.stagiaires %}
-        {{ stagiaire ~' '}}
-    {% endfor %}
+    <br> {{ 'Nom de la session: '~ session.nomSession }} <br>
+    {{ 'Nombre de places: '~ session.nbPlaces}} <br>
+    {{ 'Date de début de session: '~ session.debut}} <br>
+    {{ 'Date de fin de session: '~ session.fin }} <br>
 
     {% set dureeTotale = 0 %}
     {% for programme in session.programmes %}
         {% set dureeTotale = dureeTotale + programme ~' ' %}
     {% endfor %} 
-    {{ " durée de la session: " ~ dureeTotale ~ " jours"}}<br>
+    {{ " Durée de la session: " ~ dureeTotale ~ " jours"}} <br>
 
+    {% for stagiaire in session.stagiaires %}
+    <h2>Liste des stagiaire de la session</h2>
+        {{ stagiaire ~' '}} <br>
+    {% endfor %}
 {% endfor %}
 
 {% endblock %}
+    
