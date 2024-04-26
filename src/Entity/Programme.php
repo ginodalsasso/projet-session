@@ -22,16 +22,9 @@ class Programme
     #[ORM\JoinColumn(nullable: false)]
     private ?Module $module = null;
 
-    /**
-     * @var Collection<int, Session>
-     */
-    #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'programme')]
-    private Collection $sessions;
-
-    public function __construct()
-    {
-        $this->sessions = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'programmes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Session $session = null;
 
     
     public function getId(): ?int
@@ -64,33 +57,20 @@ class Programme
         return $this;
     }
 
-    /**
-     * @return Collection<int, Session>
-     */
-    public function getSessions(): Collection
+    public function getSession(): ?Session
     {
-        return $this->sessions;
+        return $this->session;
     }
 
-    public function addSession(Session $session): static
+    public function setSession(?Session $session): static
     {
-        if (!$this->sessions->contains($session)) {
-            $this->sessions->add($session);
-            $session->setProgramme($this);
-        }
+        $this->session = $session;
 
         return $this;
     }
 
-    public function removeSession(Session $session): static
+    public function __toString()
     {
-        if ($this->sessions->removeElement($session)) {
-            // set the owning side to null (unless already changed)
-            if ($session->getProgramme() === $this) {
-                $session->setProgramme(null);
-            }
-        }
-
-        return $this;
+        return $this->duree;
     }
 }

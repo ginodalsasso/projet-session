@@ -83,6 +83,11 @@ class Stagiaire
         return $this;
     }
 
+    public function getNaissance()
+    {
+        return $this->dateNaissance->format("d-m-Y");
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -132,5 +137,10 @@ class Stagiaire
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this -> prenom." ".$this->nom;
     }
 }

@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Liste des stagiaires</h1>
 
-    {% for stagiaire in stagiaires %}
-        {{}}
-    {% endfor %}
+        {% for stagiaire in stagiaires %}
+            {{ stagiaire.nom ~' '~ stagiaire.prenom ~' '~ stagiaire.getNaissance ~' '~ stagiaire.email ~' '~ stagiaire.telephone }} <br>
+        {% endfor %}
 {% endblock %}

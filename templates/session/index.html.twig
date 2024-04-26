@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des sessions{% endblock %}
+
+{% block body %}
+
+{% for session in sessions %}
+    {{ session.nomSession ~' '~ session.nbPlaces ~' '~ session.debut ~' '~ session.fin }} 
+    {% for stagiaire in session.stagiaires %}
+        {{ stagiaire ~' '}}
+    {% endfor %}
+
+    {% set dureeTotale = 0 %}
+    {% for programme in session.programmes %}
+        {% set dureeTotale = dureeTotale + programme ~' ' %}
+    {% endfor %} 
+    {{ " durée de la session: " ~ dureeTotale ~ " jours"}}<br>
+
+{% endfor %}
+
+{% endblock %}
