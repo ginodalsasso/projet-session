@@ -7,20 +7,29 @@ use App\Form\CreateSessionType;
 use App\Repository\ModuleRepository;
 use App\Repository\SessionRepository;
 use App\Repository\FormationRepository;
+use App\Repository\ProgrammeRepository;
+use App\Repository\StagiaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-// use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class InterfaceController extends AbstractController
 {
+    // affichage de la gestion d'une session
     #[Route('/interface', name: 'app_interface')]
-    public function index(): Response
+    public function index(FormationRepository $formationRepository, SessionRepository $sessionRepository, ModuleRepository $moduleRepository, StagiaireRepository $stagiaireRepository): Response
     {
+        $formations = $formationRepository->findAll(); 
+        $sessions = $sessionRepository->findAll(); 
+        $modules = $moduleRepository->findAll(); 
+        $stagiaires = $stagiaireRepository->findAll(); 
         return $this->render('interface/index.html.twig', [
-            'controller_name' => 'InterfaceController',
+            'formations' => $formations,
+            'sessions' => $sessions,
+            'modules' => $modules,
+            'stagiaires' => $stagiaires
         ]);
     }
 
@@ -37,12 +46,16 @@ class InterfaceController extends AbstractController
 
     // affichage de la liste des sessions
     #[Route('/session', name: 'app_session')]
-    public function listSessions(SessionRepository $sessionRepository): Response
+    public function listSessions(SessionRepository $sessionRepository, ModuleRepository $moduleRepository, ProgrammeRepository $programmeRepository): Response
     {
         $sessions = $sessionRepository->findAll(); 
+        // $programmes = $programmeRepository->findAll(); 
+        // $modules = $moduleRepository->findAll(); 
 
         return $this->render('session/index.html.twig', [
-            'sessions' => $sessions
+            'sessions' => $sessions,
+            // 'programmes' => $programmes,
+            // 'modules' => $modules
         ]);
     }
 
@@ -60,19 +73,22 @@ class InterfaceController extends AbstractController
     // affichage et création d'une session
     #[Route('/addSession', name: 'app_addSession')]
     public function addSession(EntityManagerInterface $entityManager, Request $request): Response
-    {
+    {   
+        // Crée une nouvelle instance de Session
         $newSession = new Session();
+        // Crée un formulaire pour la nouvelle session en utilisant le formulaire CreateSessionType
         $form = $this->createForm(CreateSessionType::class, $newSession);
+        // Gère la soumission du formulaire
         $form->handleRequest($request);
-
+        // Vérifie si le formulaire a été soumis et est valide
         if ($form->isSubmitted() && $form->isValid())
         {
-            // tell Doctrine you want to (eventually) save the Product (no queries yet)
+            // Persiste la nouvelle session pour la sauvegarder dans la base de données
             $entityManager->persist($newSession);
 
-            // actually executes the queries (i.e. the INSERT query)
+            // Exécute les requêtes pour enregistrer la nouvelle session dans la base de données (INSERT)           
             $entityManager->flush();
-
+            // Redirige vers la route 'app_session'
             return $this->redirectToRoute('app_session');
         }
 

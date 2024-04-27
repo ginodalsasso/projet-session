@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Création d'une session{% endblock %}
-
 {% block body %}
 
     <h1>Création d'une session</h1>
 
+    {# form étant une methode native de symfony, et en argument la variable $form #}
     {{ form(form) }}
+    
 {% endblock %}
