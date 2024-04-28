@@ -49,13 +49,13 @@ class InterfaceController extends AbstractController
     public function listSessions(SessionRepository $sessionRepository, ModuleRepository $moduleRepository, ProgrammeRepository $programmeRepository): Response
     {
         $sessions = $sessionRepository->findAll(); 
-        // $programmes = $programmeRepository->findAll(); 
-        // $modules = $moduleRepository->findAll(); 
+        $programmes = $programmeRepository->findAll(); 
+        $modules = $moduleRepository->findAll(); 
 
         return $this->render('session/index.html.twig', [
             'sessions' => $sessions,
-            // 'programmes' => $programmes,
-            // 'modules' => $modules
+            'programmes' => $programmes,
+            'modules' => $modules
         ]);
     }
 
@@ -97,31 +97,24 @@ class InterfaceController extends AbstractController
         ]);
     }
 
-        // Suppression d'une session
-        #[Route('/session/delete/{id}', name: 'app_session_delete')]
-        public function deleteSession(SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $id): Response
-        {
-            $session = $entityManager->getRepository(Session::class)->find($id); 
-            $sessions = $sessionRepository->findAll();
-
-            if (!$session) {
-                throw $this->createNotFoundException(
-                    'No product found for id '.$id
-                );
-            }
-
-            if ($session)
-            {
-                $entityManager->remove($session);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_session'); 
-            }
-
-
-            return $this->render('session/index.html.twig', [
-                'sessions' => $sessions,
-                'id' => $session->getId()
-            ]);
+    // Suppression d'une session
+    #[Route('/session/delete/{id}', name: 'app_session_delete')]
+    public function deleteSession(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $session = $entityManager->getRepository(Session::class)->find($id); 
+        // Vérifie si l'entité Session a été trouvée
+        if (!$session) {
+            throw $this->createNotFoundException(
+                'id non trouvé '.$id
+            );
         }
+        //remove notifie à doctrine que nous cherchons à suprimer un élément
+        $entityManager->remove($session);
+        //la supression ne prend effect qu'avec flush
+        $entityManager->flush();
+        // Redirige vers la route 'app_session'
+        $this->addFlash('success', 'La session a bien été suprimée');
+
+        return $this->redirectToRoute('app_session'); 
+    }
 }
