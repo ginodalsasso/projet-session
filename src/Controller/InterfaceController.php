@@ -96,4 +96,32 @@ class InterfaceController extends AbstractController
             'form' => $form
         ]);
     }
+
+        // Suppression d'une session
+        #[Route('/session/delete/{id}', name: 'app_session_delete')]
+        public function deleteSession(SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $id): Response
+        {
+            $session = $entityManager->getRepository(Session::class)->find($id); 
+            $sessions = $sessionRepository->findAll();
+
+            if (!$session) {
+                throw $this->createNotFoundException(
+                    'No product found for id '.$id
+                );
+            }
+
+            if ($session)
+            {
+                $entityManager->remove($session);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_session'); 
+            }
+
+
+            return $this->render('session/index.html.twig', [
+                'sessions' => $sessions,
+                'id' => $session->getId()
+            ]);
+        }
 }
