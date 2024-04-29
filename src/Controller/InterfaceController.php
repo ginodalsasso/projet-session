@@ -23,24 +23,18 @@ class InterfaceController extends AbstractController
     #[Route('/interface/{id}', name: 'app_interface')]
     public function index(int $id, EntityManagerInterface $entityManager,FormationRepository $formationRepository, SessionRepository $sessionRepository, ModuleRepository $moduleRepository, StagiaireRepository $stagiaireRepository): Response
     {
-        $idSession = $entityManager->getRepository(Session::class)->find($id); 
+        $session = $entityManager->getRepository(Session::class)->find($id); 
         // Vérifie si l'entité Session a été trouvée
-        if (!$idSession) {
+        if (!$session) {
             throw $this->createNotFoundException(
                 'id non trouvé '.$id
             );
         }
-
-        $formations = $formationRepository->findAll(); 
-        $sessions = $sessionRepository->findAll(); 
-        $modules = $moduleRepository->findAll(); 
-        $stagiaires = $stagiaireRepository->findAll(); 
+        // $sessions = $sessionRepository->findAll(); 
 
         return $this->render('interface/index.html.twig', [
-            'formations' => $formations,
-            'sessions' => $sessions,
-            'modules' => $modules,
-            'stagiaires' => $stagiaires
+            // 'sessions' => $sessions
+            'session' => $session
         ]);
     }
 
@@ -107,7 +101,6 @@ class InterfaceController extends AbstractController
             // Redirige vers la route 'app_session'
             return $this->redirectToRoute('app_session');
         }
-
         return $this->render('addSession/index.html.twig', [
             'form' => $form
         ]);
