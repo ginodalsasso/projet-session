@@ -21,20 +21,21 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------AFFICHAGE------------------------------------------------------
     // affichage de la gestion d'une session
     #[Route('/interface/{id}', name: 'app_interface')]
-    public function index(int $id, EntityManagerInterface $entityManager,FormationRepository $formationRepository, SessionRepository $sessionRepository, ModuleRepository $moduleRepository, StagiaireRepository $stagiaireRepository): Response
+    public function index(int $id, EntityManagerInterface $entityManager, SessionRepository $sessionRepository): Response
     {
         $session = $entityManager->getRepository(Session::class)->find($id); 
+        $nonInscrits = $sessionRepository->StagiairesNonInscrits($session->getId());
+       
         // Vérifie si l'entité Session a été trouvée
         if (!$session) {
             throw $this->createNotFoundException(
                 'id non trouvé '.$id
             );
         }
-        // $sessions = $sessionRepository->findAll(); 
 
         return $this->render('interface/index.html.twig', [
-            // 'sessions' => $sessions
-            'session' => $session
+            'session' => $session,
+            'nonInscrits' => $nonInscrits
         ]);
     }
 

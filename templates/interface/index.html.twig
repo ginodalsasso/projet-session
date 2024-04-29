@@ -4,6 +4,9 @@
 
 {% block body %}
     
+
+{% dump(session.id) %}
+
 <br> <a href="{{ path('app_interface', {'id':session.id}) }}">{{ session.nomSession }}</a> <a href=" {{ path('app_editSession', {'id':session.id}) }} ">Editer</a><a href="{{ path('app_session_delete', {'id':session.id}) }}">Suprimer</a><br>
 {{ 'Nombre de places: '~ session.nbPlaces}} <br>
 {{ 'Date de début de session: '~ session.debut}} <br>
@@ -24,9 +27,18 @@
     {{ programme.module.nomModule }} {{ '(' ~ programme.module.categorie.nomCategorie ~ ')'}} <br>
 {% endfor %}
 
-{% for stagiaire in session.stagiaires %}
-    <h2>Liste des stagiaires de la session</h2>
-    {{ stagiaire ~' '}} <br>
+{{ 'Stagiaire inscrits: '}}
+{% for stagiaire in session.stagiaires %} <br>
+    {{ stagiaire ~' '}} 
+{% endfor %}
+
+<br>
+
+{{ 'Stagiaire non inscrits: '}}
+{% for nonInscrit in nonInscrits %} <br>
+
+    {{ nonInscrit }}
+    
 {% endfor %}
 
 {% endblock %}
