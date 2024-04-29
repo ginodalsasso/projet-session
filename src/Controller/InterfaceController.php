@@ -17,14 +17,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class InterfaceController extends AbstractController
 {
+
+//--------------------------------------------------AFFICHAGE------------------------------------------------------
     // affichage de la gestion d'une session
-    #[Route('/interface', name: 'app_interface')]
-    public function index(FormationRepository $formationRepository, SessionRepository $sessionRepository, ModuleRepository $moduleRepository, StagiaireRepository $stagiaireRepository): Response
+    #[Route('/interface/{id}', name: 'app_interface')]
+    public function index(int $id, EntityManagerInterface $entityManager,FormationRepository $formationRepository, SessionRepository $sessionRepository, ModuleRepository $moduleRepository, StagiaireRepository $stagiaireRepository): Response
     {
+        $idSession = $entityManager->getRepository(Session::class)->find($id); 
+        // Vérifie si l'entité Session a été trouvée
+        if (!$idSession) {
+            throw $this->createNotFoundException(
+                'id non trouvé '.$id
+            );
+        }
+
         $formations = $formationRepository->findAll(); 
         $sessions = $sessionRepository->findAll(); 
         $modules = $moduleRepository->findAll(); 
         $stagiaires = $stagiaireRepository->findAll(); 
+
         return $this->render('interface/index.html.twig', [
             'formations' => $formations,
             'sessions' => $sessions,
@@ -70,21 +81,26 @@ class InterfaceController extends AbstractController
         ]);
     }
     
+//--------------------------------------------------CREER/EDITER------------------------------------------------------
     // affichage et création d'une session
     #[Route('/addSession', name: 'app_addSession')]
-    public function addSession(EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/{id}/editSession', name: 'app_editSession')]
+    public function add_editSession(Session $session = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
-        // Crée une nouvelle instance de Session
-        $newSession = new Session();
+        //si la session n'existe pas alors
+        if(!$session){
+            // Crée une nouvelle instance de Session
+            $session = new Session();
+        }
         // Crée un formulaire pour la nouvelle session en utilisant le formulaire CreateSessionType
-        $form = $this->createForm(CreateSessionType::class, $newSession);
+        $form = $this->createForm(CreateSessionType::class, $session);
         // Gère la soumission du formulaire
         $form->handleRequest($request);
         // Vérifie si le formulaire a été soumis et est valide
         if ($form->isSubmitted() && $form->isValid())
         {
             // Persiste la nouvelle session pour la sauvegarder dans la base de données
-            $entityManager->persist($newSession);
+            $entityManager->persist($session);
 
             // Exécute les requêtes pour enregistrer la nouvelle session dans la base de données (INSERT)           
             $entityManager->flush();
@@ -97,6 +113,7 @@ class InterfaceController extends AbstractController
         ]);
     }
 
+//--------------------------------------------------SUPPRIMER------------------------------------------------------
     // Suppression d'une session
     #[Route('/session/delete/{id}', name: 'app_session_delete')]
     public function deleteSession(EntityManagerInterface $entityManager, int $id): Response
@@ -108,8 +125,7 @@ class InterfaceController extends AbstractController
                 'id non trouvé '.$id
             );
         }
-        //remove notifie à doctrine que nous cherchons à suprimer un élément
-        $entityManager->remove($session);
+        //remove notifie à doctrine que nous cherchons à suprimer un élément    
         //la supression ne prend effect qu'avec flush
         $entityManager->flush();
         // Redirige vers la route 'app_session'
