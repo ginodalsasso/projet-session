@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Module;
 use App\Entity\Session;
 use App\Form\CreateSessionType;
 use App\Repository\ModuleRepository;
@@ -21,21 +22,21 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------AFFICHAGE------------------------------------------------------
     // affichage de la gestion d'une session
     #[Route('/interface/{id}', name: 'app_interface')]
-    public function index(int $id, EntityManagerInterface $entityManager, SessionRepository $sessionRepository): Response
+    public function index(int $id, Session $session = null, SessionRepository $sessionRepository): Response
     {
-        $session = $entityManager->getRepository(Session::class)->find($id); 
-        $nonInscrits = $sessionRepository->StagiairesNonInscrits($session->getId());
-       
         // Vérifie si l'entité Session a été trouvée
         if (!$session) {
             throw $this->createNotFoundException(
                 'id non trouvé '.$id
             );
         }
+        $nonInscrits = $sessionRepository->StagiairesNonInscrits($session->getId());
+        $moduleNonInscrits = $sessionRepository->ModulesNonInscrits($session->getId());
 
         return $this->render('interface/index.html.twig', [
             'session' => $session,
-            'nonInscrits' => $nonInscrits
+            'nonInscrits' => $nonInscrits,
+            'moduleNonInscrits' => $moduleNonInscrits
         ]);
     }
 
@@ -52,16 +53,12 @@ class InterfaceController extends AbstractController
 
     // affichage de la liste des sessions
     #[Route('/session', name: 'app_session')]
-    public function listSessions(SessionRepository $sessionRepository, ModuleRepository $moduleRepository, ProgrammeRepository $programmeRepository): Response
+    public function listSessions(SessionRepository $sessionRepository): Response
     {
         $sessions = $sessionRepository->findAll(); 
-        $programmes = $programmeRepository->findAll(); 
-        $modules = $moduleRepository->findAll(); 
 
         return $this->render('session/index.html.twig', [
-            'sessions' => $sessions,
-            'programmes' => $programmes,
-            'modules' => $modules
+            'sessions' => $sessions
         ]);
     }
 

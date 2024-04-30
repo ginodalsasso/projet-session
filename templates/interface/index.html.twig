@@ -41,4 +41,11 @@
     
 {% endfor %}
 
+{{ 'Modules non inscrits: '}}
+{% for moduleNonInscrit in moduleNonInscrits %} <br>
+
+    {{ moduleNonInscrit.nomModule }}
+    
+{% endfor %}
+
 {% endblock %}

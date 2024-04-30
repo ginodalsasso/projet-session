@@ -79,35 +79,37 @@ class SessionRepository extends ServiceEntityRepository
     }
 
 
-    // public function ModulesNonInscrits($session_id)
-    // {
-    //     $em = $this->getEntityManager();
-    //     $qb = $em->createQueryBuilder();
- 
+    public function ModulesNonInscrits($module_id)
+    {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
        
-    //     // sélectionner tous les modules d'une session dont l'id est passé en paramètre
-    //     $qb->select('m')
-    //         ->from('App\Entity\Module', 'm')
-    //         ->leftJoin('s.sessions', 'se')
-    //         ->where('se.id = :id');
+        // sélectionner tous les modules d'une session dont l'id est passé en paramètre
+        $qb->select('m')
+            ->from('App\Entity\Module', 'm')
+            ->leftJoin('m.programmes', 'pr')
+            ->where('pr.id = :id');
+
+        $sub = $em->createQueryBuilder();
+        // sélectionner tous les modules qui ne SONT PAS (NOT IN) dans le résultat précédent
+        // on obtient donc les modules non inscrits pour une session définie
+        $sub->select('mo')
+            ->from('App\Entity\module', 'mo')
+            ->where($sub->expr()->notIn('mo.id', $qb->getDQL()))
+            // requête paramétrée
+            ->setParameter('id', $module_id)
+            // trier la liste des stagiaires sur le nom de famille
+            ->orderBy('mo.nomModule');
        
-    //     $sub = $em->createQueryBuilder();
-    //     // sélectionner tous les modules qui ne SONT PAS (NOT IN) dans le résultat précédent
-    //     // on obtient donc les modules non inscrits pour une session définie
-    //     $sub->select('mo')
-    //         ->from('App\Entity\module', 'mo')
-    //         ->where($sub->expr()->notIn('mo.id', $qb->getDQL()))
-    //         // requête paramétrée
-    //         ->setParameter('id', $session_id)
-    //         // trier la liste des stagiaires sur le nom de famille
-    //         ->orderBy('st.nom');
+        // renvoyer le résultat
+        $query = $sub->getQuery();
+        return $query->getResult();
+
+        // SELECT * 
+        // FROM module m
+        // LEFT JOIN programme p ON m.id = p.module_id
+        // WHERE m.id NOT IN (SELECT module_id FROM programme WHERE session_id = 3)
+
        
-    //     // renvoyer le résultat
-    //     $query = $sub->getQuery();
-    //     return $query->getResult();
-    //     //requête DQL équivaut en SQL:
-    //     //SELECT * FROM stagiaire
-    //     //WHERE id_stagiaire NOT IN (SELECT id_stagiaire FROM participer WHERE id_session = : id_session)
-    //     //où participer serait la table associative entre SESSION et STAGIAIRE 
-    // }
+    }
 }
