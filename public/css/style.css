@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+:root{
+    --bg-colour: #010309;
+    --content-colour: #020613;
+    --cards-colour: #121729;
+    --stroke-colour: #374368;
+    --btn-colour: #FF9A6C;
+    --logo-colour: #FF9A6C;
+    --font-color: #FFFFFF;
+
+    --font-family: 'Roboto', sans-serif;
+
+    --h1-size: 36px;
+    --h2-size: 16px;
+    --aside-size: 24px;
+    --font-size: 14px;
+    --logo-size: 40px;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.wrapper{
+    display:flex;
+    justify-content: center;
+}
+
+body{
+    height:100%;
+    color: var(--font-color);
+    font-family: var(--font-family);
+    background: var(--bg-colour);
+
+}
+.nav_container{
+    display: flex;
+    align-content: center;
+}
+
+aside{
+    float: left;
+    height: 100vh;
+    width: clamp(280px, 50vw, 300px);
+    background-color: var(--cards-colour);
+    padding: 20px 30px;
+    border-right: solid var(--stroke-colour);
+    border-left: solid var(--stroke-colour);
+}
+
+.logo{
+    font-family: "Audiowide", sans-serif;
+    font-weight: 400;
+    font-size: var(--logo-size);
+    color: var(--logo-colour);
+    text-align: center;
+    margin-bottom: 50px;
+    cursor: default;
+}
+
+nav ul{
+    list-style: none;
+}
+
+nav ul li{
+    padding: 20px 0;
+}
+
+nav ul li a{
+    text-decoration: none;
+    color: var(--font-color);
+    font-size: clamp(20px, 3vw, 24px);
+    font-weight: 700;
+
+}
+
+.container{
+    width: 50vw;
+    background: var(--content-colour);
+    border-right: solid var(--stroke-colour);
+
+}
+
+@media (max-width: 850px) {
+    body{ 
+        width: 100vw; }
+}
+

@@ -3,9 +3,10 @@
 {% block title %}Liste des modules{% endblock %}
 
 {% block body %}
+<div class="container">
 
     {% for module in modules %}
         {{ module.nomModule ~ ' '~ module.categorie }}  <br>
     {% endfor %}
-
+</div>
 {% endblock %}

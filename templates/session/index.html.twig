@@ -4,6 +4,7 @@
 
 {% block body %}
 
+<div class="container">
     {% for session in sessions %}
         <br> <a href="{{ path('app_interface', {'id':session.id}) }}">{{ session.nomSession }}</a> <a href=" {{ path('app_editSession', {'id':session.id}) }} ">Editer</a><a href="{{ path('app_session_delete', {'id':session.id}) }}">Suprimer</a><br>
         {{ 'Nombre de places: '~ session.nbPlaces}} <br>
@@ -30,6 +31,6 @@
             {{ stagiaire ~' '}} <br>
         {% endfor %}
     {% endfor %}
-
+</div>
 {% endblock %}
     

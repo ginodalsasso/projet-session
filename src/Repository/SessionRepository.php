@@ -96,7 +96,7 @@ class SessionRepository extends ServiceEntityRepository
         $sub->select('mo')
             ->from('App\Entity\module', 'mo')
             ->where($sub->expr()->notIn('mo.id', $qb->getDQL()))
-            // requête paramétrée
+            // requête paramétrée de l'id récupéré précédemment
             ->setParameter('id', $module_id)
             // trier la liste des stagiaires sur le nom de famille
             ->orderBy('mo.nomModule');

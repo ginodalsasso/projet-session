@@ -5,47 +5,45 @@
 {% block body %}
     
 
-{% dump(session.id) %}
 
-<br> <a href="{{ path('app_interface', {'id':session.id}) }}">{{ session.nomSession }}</a> <a href=" {{ path('app_editSession', {'id':session.id}) }} ">Editer</a><a href="{{ path('app_session_delete', {'id':session.id}) }}">Suprimer</a><br>
-{{ 'Nombre de places: '~ session.nbPlaces}} <br>
-{{ 'Date de début de session: '~ session.debut}} <br>
-{{ 'Date de fin de session: '~ session.fin }} <br>
+<div class="container">
+    <br> <a href="{{ path('app_interface', {'id':session.id}) }}">{{ session.nomSession }}</a> <a href=" {{ path('app_editSession', {'id':session.id}) }} ">Editer</a><a href="{{ path('app_session_delete', {'id':session.id}) }}">Suprimer</a><br>
+    {{ 'Nombre de places: '~ session.nbPlaces}} <br>
+    {{ 'Date de début de session: '~ session.debut}} <br>
+    {{ 'Date de fin de session: '~ session.fin }} <br>
 
-{# Initiation de la variable pour stocker la durée totale #}
-{% set dureeTotale = 0 %}
-{% for programme in session.programmes %}
-    {# Ajout de la durée de chaque programme à la durée totale #}
-    {% set dureeTotale = dureeTotale + programme ~' ' %}
-{% endfor %} 
-{# Affichage de la durée totale de la session #}
-{{ " Durée de la session: " ~ dureeTotale ~ " jours"}} <br>
+    {# Initiation de la variable pour stocker la durée totale #}
+    {% set dureeTotale = 0 %}
+    {% for programme in session.programmes %}
+        {# Ajout de la durée de chaque programme à la durée totale #}
+        {% set dureeTotale = dureeTotale + programme ~' ' %}
+    {% endfor %} 
+    {# Affichage de la durée totale de la session #}
+    {{ " Durée de la session: " ~ dureeTotale ~ " jours"}} <br>
 
-{# Affichage des modules et de leurs catégories #}
-{{ "Modules:" }} <br>   
-{% for programme in session.programmes %}
-    {{ programme.module.nomModule }} {{ '(' ~ programme.module.categorie.nomCategorie ~ ')'}} <br>
-{% endfor %}
+    {# Affichage des modules et de leurs catégories #}
+    {{ "Modules compris:" }} <br>   
+    {% for programme in session.programmes %}
+        {{ programme.module.nomModule }} {{ '(' ~ programme.module.categorie.nomCategorie ~ ')'}} <br>
+    {% endfor %}
 
-{{ 'Stagiaire inscrits: '}}
-{% for stagiaire in session.stagiaires %} <br>
-    {{ stagiaire ~' '}} 
-{% endfor %}
+    {{ 'Modules non compris: '}}
+    {% for moduleNonInscrit in moduleNonInscrits %} <br>
+        {{ moduleNonInscrit.nomModule }}  {{ '(' ~ moduleNonInscrit.categorie.nomCategorie ~ ')'}}
+    {% endfor %}
 
-<br>
+    <br>
 
-{{ 'Stagiaire non inscrits: '}}
-{% for nonInscrit in nonInscrits %} <br>
+    {{ 'Stagiaire inscrits: '}}
+    {% for stagiaire in session.stagiaires %} <br>
+        {{ stagiaire ~' '}} 
+    {% endfor %}
 
-    {{ nonInscrit }}
-    
-{% endfor %}
+    <br>
 
-{{ 'Modules non inscrits: '}}
-{% for moduleNonInscrit in moduleNonInscrits %} <br>
-
-    {{ moduleNonInscrit.nomModule }}
-    
-{% endfor %}
-
+    {{ 'Stagiaire non inscrits: '}}
+    {% for nonInscrit in nonInscrits %} <br>
+        {{ nonInscrit }}
+    {% endfor %}
+</div>
 {% endblock %}

@@ -3,6 +3,8 @@
 {% block title %}Liste des stagiaires{% endblock %}
 
 {% block body %}
+<div class="container">
+
     <h1>Liste des stagiaires</h1>
 
         {% for stagiaire in stagiaires %}
@@ -12,4 +14,5 @@
                 {{ session.nomSession }}
             {% endfor %} <br>
         {% endfor %}
+</div>
 {% endblock %}
