@@ -6,12 +6,13 @@
 <div class="container">
 
     <h1>Liste des formations</h1>
-
-    {% for formation in formations %}
-        {{ formation.nomFormation }}
-        {% for session in formation.sessions %}
-            {{ session }}
-        {% endfor %} <br>
-    {% endfor %}
+    <div class="card">
+        {% for formation in formations %}
+            {{ formation.nomFormation }}
+            {% for session in formation.sessions %}
+                {{ session }}
+            {% endfor %} <br>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

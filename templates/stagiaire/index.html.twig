@@ -4,15 +4,22 @@
 
 {% block body %}
 <div class="container">
-
     <h1>Liste des stagiaires</h1>
-
-        {% for stagiaire in stagiaires %}
-            {{ stagiaire.nom ~' '~ stagiaire.prenom ~' '~ stagiaire.getNaissance ~' '~ stagiaire.email ~' '~ stagiaire.telephone }} 
-            
+    
+    {% for stagiaire in stagiaires %} 
+    <div class="card">
+        {{ 'Nom de fammille: ' ~ stagiaire.nom }} <br> 
+        {{  'Prénom: ' ~ stagiaire.prenom }} <br> 
+        {{  'Date de naissance: ' ~ stagiaire.getNaissance }} <br> 
+        {{  'Email: ' ~ stagiaire.email }} <br> 
+        {{  'Téléphone: ' ~ stagiaire.telephone }} <br>   
+        {% if stagiaire.sessions == true %}                    
             {% for session in stagiaire.sessions %}
+            {{ 'Session: ' }} <br>
                 {{ session.nomSession }}
-            {% endfor %} <br>
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
+            </div>
+    {% endfor %}
 </div>
 {% endblock %}

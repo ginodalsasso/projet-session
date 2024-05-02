@@ -109,7 +109,6 @@ class SessionRepository extends ServiceEntityRepository
         // FROM module m
         // LEFT JOIN programme p ON m.id = p.module_id
         // WHERE m.id NOT IN (SELECT module_id FROM programme WHERE session_id = 3)
-
        
     }
 }

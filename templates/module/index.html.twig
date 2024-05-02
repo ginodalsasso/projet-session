@@ -4,9 +4,12 @@
 
 {% block body %}
 <div class="container">
-
-    {% for module in modules %}
-        {{ module.nomModule ~ ' '~ module.categorie }}  <br>
-    {% endfor %}
+    <h1>Liste des modules</h1>
+    
+    <div class="card">
+        {% for module in modules %}
+            {{ module.nomModule ~ ' ('~ module.categorie ~ ')' }}  <br>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
