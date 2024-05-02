@@ -14,9 +14,12 @@
             <p>{{ 'Date de fin de session: '~ session.fin }}</p>
         </div>    
         <div class="card">
-            <p>{{ 'Nombre de places: '~ session.nbPlaces}}</p>
-            <p>{{ 'Places reservées: '}}</p>
-            <p>{{ 'Places restantes: '}}</p>
+            <p>{{ 'Nombre de places: '~ session.nbPlaces }}</p>
+            {# calcul le nom de place reservée dans le tableau stagiaires #}
+            <p>{{ 'Places reservées: 0' ~ session.stagiaires|length }}</p>
+            {# soustraction pour le nombre de places restantes #}
+            {% set placesRestantes = session.nbPlaces - session.stagiaires|length %}
+            <p>{{ 'Places restantes: ' ~ placesRestantes }}</p>
         </div>
     </div>
 
@@ -79,7 +82,7 @@
                 <div class="column">
                     <p>{{ "Soustraire" }}</p>
                     {% for stagiaire in session.stagiaires %}
-                            <p>{{ "-" }} </p>
+                            <a href="  ">{{ "-" }}</a> <br>
                     {% endfor %}
                 </div>
             </div>
@@ -97,7 +100,7 @@
                 <div class="column">
                     <p>{{ "Ajouter" }}</p>
                     {% for nonInscrit in nonInscrits %}
-                        <p>{{ "+" }} </p>
+                        <a href=" {{ path('addStagiaire', {'id':nonInscrit.id}) }} ">{{ "+" }}</a> <br>
                     {% endfor %}
                 </div>
             </div>

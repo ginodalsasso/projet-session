@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Module;
 use App\Entity\Session;
+use App\Entity\Stagiaire;
 use App\Form\CreateSessionType;
 use App\Repository\ModuleRepository;
 use App\Repository\SessionRepository;
@@ -73,7 +74,7 @@ class InterfaceController extends AbstractController
         ]);
     }
     
-//--------------------------------------------------CREER/EDITER------------------------------------------------------
+//--------------------------------------------------CREER/EDITER SESSION------------------------------------------------------
     // affichage et création d'une session
     #[Route('/addSession', name: 'app_addSession')]
     #[Route('/{id}/editSession', name: 'app_editSession')]
@@ -104,7 +105,7 @@ class InterfaceController extends AbstractController
         ]);
     }
 
-//--------------------------------------------------SUPPRIMER------------------------------------------------------
+//--------------------------------------------------SUPPRIMER SESSION ------------------------------------------------------
     // Suppression d'une session
     #[Route('/session/delete/{id}', name: 'app_session_delete')]
     public function deleteSession(EntityManagerInterface $entityManager, int $id): Response
@@ -123,5 +124,71 @@ class InterfaceController extends AbstractController
         $this->addFlash('success', 'La session a bien été suprimée');
 
         return $this->redirectToRoute('app_session'); 
+    }
+
+//--------------------------------------------------AJOUTER UN STAGIAIRE------------------------------------------------------
+
+    // // ajout d'un stagiaire en session
+    // #[Route('/interface/addStagiaire/{id}', name: 'addStagiaire')]
+    // public function addStagiaire(Session $session, Stagiaire $stagiaire, EntityManagerInterface $entityManager, int $id): Response
+    // {    
+    //     $session = $entityManager->getRepository(Session::class)->find($id);  // Recherche la session par son identifiant
+        
+    //     // Vérifie si l'entité Session a été trouvée
+    //     if (!$session) {
+    //         throw $this->createNotFoundException(
+    //             'id non trouvé '.$id
+    //         );
+    //     }
+
+    //     // Crée une nouvelle instance de Stagiaire
+    //     $stagiaire = new Stagiaire();
+        
+    //     // Ajoute le stagiaire à la session
+    //     $session->addStagiaire($stagiaire);
+
+    //     // Persiste les modifications dans la base de données
+    //     $entityManager->persist($stagiaire);
+    //     $entityManager->flush();
+        
+    //     // Redirige vers la route 'app_session' ou toute autre route appropriée
+    //     return $this->redirectToRoute('interface', ['id' => $id]);
+    // }
+  
+    #[Route('/interface/addStagiaire/{id}', name: 'addStagiaire')]
+    public function addStagiaire(Session $session, EntityManagerInterface $entityManager, int $sessionId, int $stagiaireId): Response
+    {    
+        // Recherche la session par son id
+        $session = $entityManager->getRepository(Session::class)->find($sessionId);  
+
+        // Vérifie si l'entité Session a été trouvée
+        if (!$session) {
+            throw $this->createNotFoundException(
+                'Session non trouvée pour l\'id '.$sessionId
+            );
+        }
+        
+        // Recherche le stagiaire par son id
+        $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($stagiaireId);
+
+        // Vérifie si l'entité Stagiaire a été trouvée
+        if (!$stagiaire) {
+            throw $this->createNotFoundException('
+                Stagiaire non trouvé pour l\'id '.$stagiaireId
+            );
+        }
+        // Vérifie si le stagiaire est déjà inscrit dans la session
+        if ($session->getStagiaires()->contains($stagiaire)) {
+            return new Response(
+                'Le stagiaire est déjà inscrit dans cette session.');
+        }
+
+        // Ajoute le stagiaire à la session
+        $session->addStagiaire($stagiaire);
+        // Persiste les modifications dans la base de données
+        $entityManager->flush();
+        
+        // Redirige vers la route 'interface' avec l'ID de la session
+        return $this->redirectToRoute('app_interface', ['id' => $session]);
     }
 }
