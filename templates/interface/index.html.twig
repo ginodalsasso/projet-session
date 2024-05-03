@@ -82,7 +82,7 @@
                 <div class="column">
                     <p>{{ "Soustraire" }}</p>
                     {% for stagiaire in session.stagiaires %}
-                            <a href="  ">{{ "-" }}</a> <br>
+                            <a href=" {{ path('deleteStagiaire', {'sessionId': session.id, 'stagiaireId':stagiaire.id}) }} ">{{ "-" }}</a> <br>
                     {% endfor %}
                 </div>
             </div>
@@ -99,8 +99,9 @@
 
                 <div class="column">
                     <p>{{ "Ajouter" }}</p>
+
                     {% for nonInscrit in nonInscrits %}
-                        <a href=" {{ path('addStagiaire', {'id':nonInscrit.id}) }} ">{{ "+" }}</a> <br>
+                        <a href=" {{ path('addStagiaire', {'sessionId': session.id, 'stagiaireId':nonInscrit.id}) }} ">{{ "+" }}</a> <br>
                     {% endfor %}
                 </div>
             </div>

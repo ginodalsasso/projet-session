@@ -118,6 +118,7 @@ class InterfaceController extends AbstractController
             );
         }
         //remove notifie à doctrine que nous cherchons à suprimer un élément    
+        $entityManager->remove($session);
         //la supression ne prend effect qu'avec flush
         $entityManager->flush();
         // Redirige vers la route 'app_session'
@@ -126,37 +127,11 @@ class InterfaceController extends AbstractController
         return $this->redirectToRoute('app_session'); 
     }
 
-//--------------------------------------------------AJOUTER UN STAGIAIRE------------------------------------------------------
 
-    // // ajout d'un stagiaire en session
-    // #[Route('/interface/addStagiaire/{id}', name: 'addStagiaire')]
-    // public function addStagiaire(Session $session, Stagiaire $stagiaire, EntityManagerInterface $entityManager, int $id): Response
-    // {    
-    //     $session = $entityManager->getRepository(Session::class)->find($id);  // Recherche la session par son identifiant
-        
-    //     // Vérifie si l'entité Session a été trouvée
-    //     if (!$session) {
-    //         throw $this->createNotFoundException(
-    //             'id non trouvé '.$id
-    //         );
-    //     }
+//--------------------------------------------------AJOUTER / SUPPRIMER UN STAGIAIRE EN SESSION ------------------------------------------------------
 
-    //     // Crée une nouvelle instance de Stagiaire
-    //     $stagiaire = new Stagiaire();
-        
-    //     // Ajoute le stagiaire à la session
-    //     $session->addStagiaire($stagiaire);
-
-    //     // Persiste les modifications dans la base de données
-    //     $entityManager->persist($stagiaire);
-    //     $entityManager->flush();
-        
-    //     // Redirige vers la route 'app_session' ou toute autre route appropriée
-    //     return $this->redirectToRoute('interface', ['id' => $id]);
-    // }
-  
-    #[Route('/interface/addStagiaire/{id}', name: 'addStagiaire')]
-    public function addStagiaire(Session $session, EntityManagerInterface $entityManager, int $sessionId, int $stagiaireId): Response
+    #[Route('/interface/{sessionId}/{stagiaireId}/addStagiaireToSession', name: 'addStagiaire')]
+    public function addStagiaireToSession(EntityManagerInterface $entityManager, int $sessionId, int $stagiaireId): Response
     {    
         // Recherche la session par son id
         $session = $entityManager->getRepository(Session::class)->find($sessionId);  
@@ -180,15 +155,55 @@ class InterfaceController extends AbstractController
         // Vérifie si le stagiaire est déjà inscrit dans la session
         if ($session->getStagiaires()->contains($stagiaire)) {
             return new Response(
-                'Le stagiaire est déjà inscrit dans cette session.');
+                'Le stagiaire est déjà inscrit dans cette session');
         }
 
-        // Ajoute le stagiaire à la session
+        // addStagiaire est une methode provenant de l'entité stagiaire 
         $session->addStagiaire($stagiaire);
         // Persiste les modifications dans la base de données
         $entityManager->flush();
-        
+
         // Redirige vers la route 'interface' avec l'ID de la session
-        return $this->redirectToRoute('app_interface', ['id' => $session]);
+        return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+    }
+
+//----------------------------------------------------------------------------------------------------------------
+
+    // Suppression d'un stagiaire en session
+    #[Route('/interface/{sessionId}/{stagiaireId}/removeStagiaireToSession', name: 'deleteStagiaire')]
+    public function removeStagiaireToSession(EntityManagerInterface $entityManager, int $sessionId, int $stagiaireId): Response
+    {
+        // Recherche la session par son id
+        $session = $entityManager->getRepository(Session::class)->find($sessionId);  
+
+        // Vérifie si l'entité Session a été trouvée
+        if (!$session) {
+            throw $this->createNotFoundException(
+                'Session non trouvée pour l\'id '.$sessionId
+            );
+        }
+        
+        // Recherche le stagiaire par son id
+        $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($stagiaireId);
+
+        // Vérifie si l'entité Stagiaire a été trouvée
+        if (!$stagiaire) {
+            throw $this->createNotFoundException('
+                Stagiaire non trouvé pour l\'id '.$stagiaireId
+            );
+        }
+        // Vérifie si le stagiaire est déjà desinscrit dans la session
+        if (!$session->getStagiaires()->contains($stagiaire)) {
+            return new Response(
+                'Le stagiaire est déjà désinscrit de cette session');
+        }
+        
+        //remove notifie à doctrine que nous cherchons à suprimer un élément    
+        $session->removeStagiaire($stagiaire);
+        //la supression ne prend effect qu'avec flush
+        $entityManager->flush();
+
+        // Redirige vers la route 'interface' avec l'ID de la session
+        return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
     }
 }
