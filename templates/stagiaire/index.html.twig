@@ -8,6 +8,15 @@
     
     {% for stagiaire in stagiaires %} 
     <div class="card">
+        <a href=" {{ path('app_editStagiaire', {'id':stagiaire.id}) }} ">Editer</a>
+        {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
+        {# cette methode permet de ne pas transiter les information de suppression via l'url #}
+        <form action=" {{ path('app_stagiaire_delete', {'id':stagiaire.id}) }}" method:"post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit">Suprimer</button>
+        </form>
+
+        <a href="{{ path('app_stagiaire_delete', {'id':stagiaire.id}) }}">Suprimer</a>
         {{ 'Nom de fammille: ' ~ stagiaire.nom }} <br> 
         {{  'Prénom: ' ~ stagiaire.prenom }} <br> 
         {{  'Date de naissance: ' ~ stagiaire.getNaissance }} <br> 

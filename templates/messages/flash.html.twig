@@ -1,0 +1,6 @@
+{% for messages in app.flashes %}
+    <div class="flash">
+        {{ messages | join('. ') }}
+    </div>
+
+{% endfor %}

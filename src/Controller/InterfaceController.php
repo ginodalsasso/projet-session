@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Module;
 use App\Entity\Session;
+use App\Entity\Programme;
 use App\Entity\Stagiaire;
 use App\Form\CreateSessionType;
+use App\Form\CreateStagiaireType;
 use App\Repository\ModuleRepository;
 use App\Repository\SessionRepository;
 use App\Repository\FormationRepository;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RequestMatcher\MethodRequestMatcher;
 
 class InterfaceController extends AbstractController
 {
@@ -74,10 +77,66 @@ class InterfaceController extends AbstractController
         ]);
     }
     
+//--------------------------------------------------CREER/EDITER STAGIAIRE------------------------------------------------------
+    // affichage et création d'un stagiaire
+    #[Route('/addStagiaire', name: 'app_addStagiaire')]
+    #[Route('/{id}/editStagiaire', name: 'app_editStagiaire', methods: ['GET', 'POST'])]
+    public function add_editStagiaire(Stagiaire $stagiaire = null, EntityManagerInterface $entityManager, Request $request): Response
+    {   
+        //si le stagiaire n'existe pas alors
+        if(!$stagiaire){
+            // Crée une nouvelle instance de stagiaire
+            $stagiaire = new Stagiaire();
+        }
+        // Crée un formulaire pour le nouveau stagiaire en utilisant le formulaire CreateStagiaireType
+        $form = $this->createForm(CreateStagiaireType::class, $stagiaire);
+        // Gère la soumission du formulaire
+        $form->handleRequest($request);
+        // Vérifie si le formulaire a été soumis et est valide
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            // Persiste le nouveau stagiaire pour le sauvegarder dans la base de données
+            $entityManager->persist($stagiaire);
+
+            // Exécute les requêtes pour enregistrer le nouveau stagiaire dans la base de données (INSERT)           
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le stagiaire à été ajouté');
+            // Redirige vers la route 'app_stagiaire
+            return $this->redirectToRoute('app_stagiaire');
+        }
+        return $this->render('addStagiaire/index.html.twig', [
+            'form' => $form
+        ]);
+    }
+    //--------------------------------------------------SUPPRIMER STAGIAIRE ------------------------------------------------------
+        // Suppression d'un stagiaire
+        #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete', methods: ['DELETE'])]
+        public function deleteStagiaire(EntityManagerInterface $entityManager, int $id): Response
+        {
+            $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($id); 
+            // Vérifie si l'entité stagiaire a été trouvée
+            if (!$stagiaire) {
+                throw $this->createNotFoundException(
+                    'id non trouvé '.$id
+                );
+            }
+            //remove notifie à doctrine que nous cherchons à suprimer un élément    
+            $entityManager->remove($stagiaire);
+            //la supression ne prend effect qu'avec flush
+            $entityManager->flush();
+            // Redirige vers la route 'app_stagiaire'
+
+            $this->addFlash('success', 'Le stagiaire a bien été suprimée');
+    
+            return $this->redirectToRoute('app_stagiaire'); 
+        }
+    
+
 //--------------------------------------------------CREER/EDITER SESSION------------------------------------------------------
     // affichage et création d'une session
     #[Route('/addSession', name: 'app_addSession')]
-    #[Route('/{id}/editSession', name: 'app_editSession')]
+    #[Route('/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'])]
     public function add_editSession(Session $session = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
         //si la session n'existe pas alors
@@ -107,7 +166,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------SUPPRIMER SESSION ------------------------------------------------------
     // Suppression d'une session
-    #[Route('/session/delete/{id}', name: 'app_session_delete')]
+    #[Route('/session/delete/{id}', name: 'app_session_delete', methods: ['DELETE'])]
     public function deleteSession(EntityManagerInterface $entityManager, int $id): Response
     {
         $session = $entityManager->getRepository(Session::class)->find($id); 
@@ -206,4 +265,43 @@ class InterfaceController extends AbstractController
         // Redirige vers la route 'interface' avec l'ID de la session
         return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
     }
+
+    #[Route('/interface/{sessionId}/{programmeId}/addProgrammeToSession', name: 'addProgramme')]
+    public function addProgrammeToSession(EntityManagerInterface $entityManager, int $sessionId, int $programmeId): Response
+    {    
+        // Recherche la session par son id
+        $session = $entityManager->getRepository(Session::class)->find($sessionId);  
+
+        // Vérifie si l'entité Session a été trouvée
+        if (!$session) {
+            throw $this->createNotFoundException(
+                'Session non trouvée pour l\'id '.$sessionId
+            );
+        }
+        
+        // Recherche le stagiaire par son id
+        $programme = $entityManager->getRepository(Programme::class)->find($programmeId);
+
+        // Vérifie si l'entité Stagiaire a été trouvée
+        if (!$programme) {
+            throw $this->createNotFoundException('
+                Programme non trouvé pour l\'id '.$programmeId
+            );
+        }
+        // Vérifie si le stagiaire est déjà inscrit dans la session
+        if ($session->getProgrammes()->contains($programme)) {
+            return new Response(
+                'Le programme est déjà inscrit dans cette session');
+        }
+
+        // addStagiaire est une methode provenant de l'entité stagiaire 
+        $session->addProgramme($programme);
+        // Persiste les modifications dans la base de données
+        $entityManager->flush();
+
+        // Redirige vers la route 'interface' avec l'ID de la session
+        return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+
+    }
+
 }

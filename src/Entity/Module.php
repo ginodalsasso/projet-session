@@ -62,6 +62,11 @@ class Module
         return $this;
     }
 
+    public function __toString()
+    {
+        return $this -> nomModule;
+    }
+
     /**
      * @return Collection<int, Programme>
      */
