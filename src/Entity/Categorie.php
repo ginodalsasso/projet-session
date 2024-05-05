@@ -6,8 +6,12 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert; //use Assert pour les contraintes formulaire
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
+//évite les doublons venant d'une soumission de form
+#[UniqueEntity('nomCategorie')]
 class Categorie
 {
     #[ORM\Id]
@@ -16,6 +20,9 @@ class Categorie
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    //use Assert pour les contraintes formulaire
+    #[Assert\Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Invalid nom catégorie')]
+    #[Assert\Length(min: 5)]
     private ?string $nomCategorie = null;
 
     /**

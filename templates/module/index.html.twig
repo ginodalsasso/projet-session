@@ -15,10 +15,10 @@
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit">Suprimer</button>
             </form>
-            
+
             {{ module.nomModule ~ ' ('~ module.categorie ~ ')' }}  <br>
         {% endfor %}
     </div>
-    <a href=" {{ path('app_addModule') }} ">Ajouter un module</a>
+    <a class="btn-create" href=" {{ path('app_addModule') }} ">Ajouter un module</a>
 </div>
 {% endblock %}

@@ -88,6 +88,17 @@ nav ul li a{
 }
 
 /* ------------------------------body-------------------------------------- */
+.btn-create{
+    background-color: var(--btn-colour);
+    text-decoration: none;
+    margin: 20px;
+    padding: 6px;
+    border-radius: 10px;
+    border: solid var(--font-color);
+    text-decoration: none;
+    color: var(--font-color);
+    font-weight: 500;
+}
 
 h1{
     margin: 25px 0 25px 20px;
