@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'un Module{% endblock %}
+{% block body %}
+
+<div class="container">
+    <h1>Création d'un Module</h1>
+
+    <div class="card">
+        {# form étant une methode native de symfony, et en argument la variable $form #}
+        {{ form(form) }}
+    </div>
+
+</div>
+{% endblock %}

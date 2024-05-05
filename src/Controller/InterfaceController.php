@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Module;
 use App\Entity\Session;
+use App\Entity\Formation;
 use App\Entity\Programme;
 use App\Entity\Stagiaire;
+use App\Form\CreateModuleType;
 use App\Form\CreateSessionType;
+use App\Form\CreateFormationType;
 use App\Form\CreateStagiaireType;
 use App\Repository\ModuleRepository;
 use App\Repository\SessionRepository;
@@ -76,6 +79,9 @@ class InterfaceController extends AbstractController
             'modules' => $modules
         ]);
     }
+
+
+
     
 //--------------------------------------------------CREER/EDITER STAGIAIRE------------------------------------------------------
     // affichage et création d'un stagiaire
@@ -110,33 +116,33 @@ class InterfaceController extends AbstractController
         ]);
     }
     //--------------------------------------------------SUPPRIMER STAGIAIRE ------------------------------------------------------
-        // Suppression d'un stagiaire
-        #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete', methods: ['DELETE'])]
-        public function deleteStagiaire(EntityManagerInterface $entityManager, int $id): Response
-        {
-            $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($id); 
-            // Vérifie si l'entité stagiaire a été trouvée
-            if (!$stagiaire) {
-                throw $this->createNotFoundException(
-                    'id non trouvé '.$id
-                );
-            }
-            //remove notifie à doctrine que nous cherchons à suprimer un élément    
-            $entityManager->remove($stagiaire);
-            //la supression ne prend effect qu'avec flush
-            $entityManager->flush();
-            // Redirige vers la route 'app_stagiaire'
-
-            $this->addFlash('success', 'Le stagiaire a bien été suprimée');
-    
-            return $this->redirectToRoute('app_stagiaire'); 
+    // Suppression d'un stagiaire
+    #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete')]
+    public function deleteStagiaire(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($id); 
+        // Vérifie si l'entité stagiaire a été trouvée
+        if (!$stagiaire) {
+            throw $this->createNotFoundException(
+                'id non trouvé '.$id
+            );
         }
-    
+        //remove notifie à doctrine que nous cherchons à suprimer un élément    
+        $entityManager->remove($stagiaire);
+        //la supression ne prend effect qu'avec flush
+        $entityManager->flush();
+        // Redirige vers la route 'app_stagiaire'
+
+        $this->addFlash('success', 'Le stagiaire a bien été suprimé');
+
+        return $this->redirectToRoute('app_stagiaire'); 
+    }
+
 
 //--------------------------------------------------CREER/EDITER SESSION------------------------------------------------------
     // affichage et création d'une session
-    #[Route('/addSession', name: 'app_addSession')]
-    #[Route('/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'])]
+    #[Route('/editSession', name: 'app_addSession')]
+    #[Route('/session/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'])]
     public function add_editSession(Session $session = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
         //si la session n'existe pas alors
@@ -159,14 +165,14 @@ class InterfaceController extends AbstractController
             // Redirige vers la route 'app_session'
             return $this->redirectToRoute('app_session');
         }
-        return $this->render('addSession/index.html.twig', [
+        return $this->render('session/edit.html.twig', [
             'form' => $form
         ]);
     }
 
 //--------------------------------------------------SUPPRIMER SESSION ------------------------------------------------------
     // Suppression d'une session
-    #[Route('/session/delete/{id}', name: 'app_session_delete', methods: ['DELETE'])]
+    #[Route('/session/delete/{id}', name: 'app_session_delete')]
     public function deleteSession(EntityManagerInterface $entityManager, int $id): Response
     {
         $session = $entityManager->getRepository(Session::class)->find($id); 
@@ -185,6 +191,121 @@ class InterfaceController extends AbstractController
 
         return $this->redirectToRoute('app_session'); 
     }
+    
+
+//--------------------------------------------------CREER/EDITER MODULE------------------------------------------------------
+    // affichage et création d'un module
+    #[Route('/editModule', name: 'app_addModule')]
+    #[Route('/module/{id}/editModule', name: 'app_editModule', methods: ['GET', 'POST'])]
+    public function add_editModule(Module $module = null, EntityManagerInterface $entityManager, Request $request): Response
+    {   
+        //si le module n'existe pas alors
+        if(!$module){
+            // Crée une nouvelle instance de Module
+            $module = new Module();
+        }
+        // Crée un formulaire pour le module en utilisant le formulaire CreateSessionType
+        $form = $this->createForm(CreateModuleType::class, $module);
+        // Gère la soumission du formulaire
+        $form->handleRequest($request);
+        // Vérifie si le formulaire a été soumis et est valide
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            // Persiste le nouveau module pour le sauvegarder dans la base de données
+            $entityManager->persist($module);
+
+            // Exécute les requêtes pour enregistrer le nouveau module dans la base de données (INSERT)           
+            $entityManager->flush();
+            // Redirige vers la route 'app_module'
+            return $this->redirectToRoute('app_module');
+        }
+        return $this->render('module/edit.html.twig', [
+            'form' => $form
+        ]);
+    }
+
+
+//--------------------------------------------------SUPPRIMER MODULE ------------------------------------------------------
+    // Suppression d'une module
+    #[Route('/module/delete/{id}', name: 'app_module_delete')]
+    public function deleteModule(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $module = $entityManager->getRepository(Module::class)->find($id); 
+        // Vérifie si l'entité module a été trouvée
+        if (!$module) {
+            throw $this->createNotFoundException(
+                'id non trouvé '.$id
+            );
+        }
+        //remove notifie à doctrine que nous cherchons à suprimer un élément    
+        $entityManager->remove($module);
+        //la supression ne prend effect qu'avec flush
+        $entityManager->flush();
+        // Redirige vers la route 'app_module'
+        $this->addFlash('success', 'Le module a bien été suprimé');
+
+        return $this->redirectToRoute('app_module'); 
+    }
+
+
+//--------------------------------------------------CREER/EDITER FORMATION------------------------------------------------------
+    // affichage et création d'une formation
+    #[Route('/editFormation', name: 'app_addFormation')]
+    #[Route('/formation/{id}/editFormation', name: 'app_editFormation', methods: ['GET', 'POST'])]
+    public function add_editFormation(Formation $formation = null, EntityManagerInterface $entityManager, Request $request): Response
+    {   
+        //si la formation n'existe pas alors
+        if(!$formation){
+            // Crée une nouvelle instance de formation
+            $formation = new Formation();
+        }
+        // Crée un formulaire pour la formation en utilisant le formulaire CreateSessionType
+        $form = $this->createForm(CreateFormationType::class, $formation);
+        // Gère la soumission du formulaire
+        $form->handleRequest($request);
+        // Vérifie si le formulaire a été soumis et est valide
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            // Persiste la nouvelle formation pour le sauvegarder dans la base de données
+            $entityManager->persist($formation);
+
+            // Exécute les requêtes pour enregistrer la nouvelle formation dans la base de données (INSERT)           
+            $entityManager->flush();
+            // Redirige vers la route 'app_formation'
+            return $this->redirectToRoute('app_formation');
+        }
+        return $this->render('formation/edit.html.twig', [
+            'form' => $form
+        ]);
+    }
+
+//--------------------------------------------------SUPPRIMER FORMATION ------------------------------------------------------
+    // Suppression d'une formation
+    #[Route('/formation/delete/{id}', name: 'app_formation_delete')]
+    public function deleteFormation(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $formation = $entityManager->getRepository(Formation::class)->find($id); 
+        // Vérifie si l'entité formation a été trouvée
+        if (!$formation) {
+            throw $this->createNotFoundException(
+                'id non trouvé '.$id
+            );
+        }
+        //remove notifie à doctrine que nous cherchons à suprimer un élément    
+        $entityManager->remove($formation);
+        //la supression ne prend effect qu'avec flush
+        $entityManager->flush();
+        // Redirige vers la route 'app_module'
+        $this->addFlash('success', 'La formation a bien été suprimée');
+
+        return $this->redirectToRoute('app_formation'); 
+    }
+
+
+
+
+
+
 
 
 //--------------------------------------------------AJOUTER / SUPPRIMER UN STAGIAIRE EN SESSION ------------------------------------------------------
@@ -265,6 +386,8 @@ class InterfaceController extends AbstractController
         // Redirige vers la route 'interface' avec l'ID de la session
         return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
     }
+
+
 
     #[Route('/interface/{sessionId}/{programmeId}/addProgrammeToSession', name: 'addProgramme')]
     public function addProgrammeToSession(EntityManagerInterface $entityManager, int $sessionId, int $programmeId): Response

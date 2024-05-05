@@ -8,8 +8,17 @@
     
     <div class="card">
         {% for module in modules %}
+            <a href=" {{ path('app_editModule', {'id':module.id}) }} ">Editer</a>
+            {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
+            {# cette methode permet de ne pas transiter les information de suppression via l'url #}
+            <form action=" {{ path('app_module_delete', {'id':module.id}) }}" method:"post">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit">Suprimer</button>
+            </form>
+            
             {{ module.nomModule ~ ' ('~ module.categorie ~ ')' }}  <br>
         {% endfor %}
     </div>
+    <a href=" {{ path('app_addModule') }} ">Ajouter un module</a>
 </div>
 {% endblock %}
