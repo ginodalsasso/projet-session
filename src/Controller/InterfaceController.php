@@ -28,7 +28,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------AFFICHAGE------------------------------------------------------
     // affichage de la gestion d'une session
-    #[Route('/interface/{id}', name: 'app_interface')]
+    #[Route('/interface/{id}', name: 'app_interface', requirements: ['id' => '\d+'])]
     public function index(int $id, Session $session = null, SessionRepository $sessionRepository): Response
     {
         // Vérifie si l'entité Session a été trouvée
@@ -85,8 +85,8 @@ class InterfaceController extends AbstractController
     
 //--------------------------------------------------CREER/EDITER STAGIAIRE------------------------------------------------------
     // affichage et création d'un stagiaire
-    #[Route('/addStagiaire', name: 'app_addStagiaire')]
-    #[Route('/{id}/editStagiaire', name: 'app_editStagiaire', methods: ['GET', 'POST'])]
+    #[Route('/editStagiaire', name: 'app_addStagiaire')]
+    #[Route('stagiaire/{id}/editStagiaire', name: 'app_editStagiaire', methods: ['GET', 'POST'],  requirements: ['id' => '\d+'])]
     public function add_editStagiaire(Stagiaire $stagiaire = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
         //si le stagiaire n'existe pas alors
@@ -111,13 +111,13 @@ class InterfaceController extends AbstractController
             // Redirige vers la route 'app_stagiaire
             return $this->redirectToRoute('app_stagiaire');
         }
-        return $this->render('addStagiaire/index.html.twig', [
+        return $this->render('stagiaire/edit.html.twig', [
             'form' => $form
         ]);
     }
     //--------------------------------------------------SUPPRIMER STAGIAIRE ------------------------------------------------------
     // Suppression d'un stagiaire
-    #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete')]
+    #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete',  methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function deleteStagiaire(EntityManagerInterface $entityManager, int $id): Response
     {
         $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($id); 
@@ -142,7 +142,7 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------CREER/EDITER SESSION------------------------------------------------------
     // affichage et création d'une session
     #[Route('/editSession', name: 'app_addSession')]
-    #[Route('/session/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'])]
+    #[Route('/session/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function add_editSession(Session $session = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
         //si la session n'existe pas alors
@@ -172,7 +172,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------SUPPRIMER SESSION ------------------------------------------------------
     // Suppression d'une session
-    #[Route('/session/delete/{id}', name: 'app_session_delete')]
+    #[Route('/session/delete/{id}', name: 'app_session_delete',  requirements: ['id' => '\d+'])]
     public function deleteSession(EntityManagerInterface $entityManager, int $id): Response
     {
         $session = $entityManager->getRepository(Session::class)->find($id); 
@@ -196,7 +196,7 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------CREER/EDITER MODULE------------------------------------------------------
     // affichage et création d'un module
     #[Route('/editModule', name: 'app_addModule')]
-    #[Route('/module/{id}/editModule', name: 'app_editModule', methods: ['GET', 'POST'])]
+    #[Route('/module/{id}/editModule', name: 'app_editModule', methods: ['GET', 'POST'],  requirements: ['id' => '\d+'])]
     public function add_editModule(Module $module = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
         //si le module n'existe pas alors
@@ -227,7 +227,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------SUPPRIMER MODULE ------------------------------------------------------
     // Suppression d'une module
-    #[Route('/module/delete/{id}', name: 'app_module_delete')]
+    #[Route('/module/delete/{id}', name: 'app_module_delete',  requirements: ['id' => '\d+'])]
     public function deleteModule(EntityManagerInterface $entityManager, int $id): Response
     {
         $module = $entityManager->getRepository(Module::class)->find($id); 
@@ -251,7 +251,7 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------CREER/EDITER FORMATION------------------------------------------------------
     // affichage et création d'une formation
     #[Route('/editFormation', name: 'app_addFormation')]
-    #[Route('/formation/{id}/editFormation', name: 'app_editFormation', methods: ['GET', 'POST'])]
+    #[Route('/formation/{id}/editFormation', name: 'app_editFormation', methods: ['GET', 'POST'],  requirements: ['id' => '\d+'])]
     public function add_editFormation(Formation $formation = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
         //si la formation n'existe pas alors
@@ -281,7 +281,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------SUPPRIMER FORMATION ------------------------------------------------------
     // Suppression d'une formation
-    #[Route('/formation/delete/{id}', name: 'app_formation_delete')]
+    #[Route('/formation/delete/{id}', name: 'app_formation_delete', requirements: ['id' => '\d+'])]
     public function deleteFormation(EntityManagerInterface $entityManager, int $id): Response
     {
         $formation = $entityManager->getRepository(Formation::class)->find($id); 

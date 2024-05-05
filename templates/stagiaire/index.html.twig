@@ -11,7 +11,7 @@
         <a href=" {{ path('app_editStagiaire', {'id':stagiaire.id}) }} ">Editer</a>
         {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
         {# cette methode permet de ne pas transiter les information de suppression via l'url #}
-        <form action=" {{ path('app_stagiaire_delete', {'id':stagiaire.id}) }}" method:"post">
+        <form action=" {{ path('app_stagiaire_delete', {'id':stagiaire.id}) }}" method:"POST">
             <input type="hidden" name="_method" value="DELETE">
             <button type="submit">Suprimer</button>
         </form>
