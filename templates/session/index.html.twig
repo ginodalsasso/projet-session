@@ -10,7 +10,6 @@
         <div class="card">
             <a href="{{ path('app_interface', {'id':session.id}) }}">{{ session.nomSession }}</a> <a href=" {{ path('app_editSession', {'id':session.id}) }} ">Editer</a>
             
-            <a href="{{ path('app_session_delete', {'id':session.id}) }}">Suprimer</a><br>
             {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
             {# cette methode permet de ne pas transiter les information de suppression via l'url #}
             <form action=" {{ path('app_session_delete', {'id':session.id}) }}" method:"post">
@@ -41,7 +40,7 @@
                 {{ stagiaire ~' '}} <br>
             {% endfor %}
         </div>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
 {% endblock %}
     

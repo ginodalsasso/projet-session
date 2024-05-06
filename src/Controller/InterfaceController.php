@@ -278,7 +278,7 @@ class InterfaceController extends AbstractController
             // Exécute les requêtes pour enregistrer la nouvelle formation dans la base de données (INSERT)           
             $entityManager->flush();
 
-            $this->addFlash('success', 'La formation à été ajoutée/modifiée');
+            $this->addFlash('success', 'La formation à été ajoutée à la session');
 
             // Redirige vers la route 'app_formation'
             return $this->redirectToRoute('app_formation');

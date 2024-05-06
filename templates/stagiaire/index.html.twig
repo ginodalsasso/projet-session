@@ -15,8 +15,6 @@
             <input type="hidden" name="_method" value="DELETE">
             <button type="submit">Suprimer</button>
         </form>
-
-        <a href="{{ path('app_stagiaire_delete', {'id':stagiaire.id}) }}">Suprimer</a>
         {{ 'Nom de fammille: ' ~ stagiaire.nom }} <br> 
         {{  'Prénom: ' ~ stagiaire.prenom }} <br> 
         {{  'Date de naissance: ' ~ stagiaire.getNaissance }} <br> 
