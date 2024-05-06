@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class CreateProgrammeType extends AbstractType
@@ -17,13 +18,8 @@ class CreateProgrammeType extends AbstractType
     {
         $builder
             ->add('duree', IntegerType::class)
-            ->add('module', EntityType::class, [
-                'class' => Module::class,
-                'choice_label' => 'id',
-            ])
-            ->add('session', EntityType::class, [
-                'class' => Session::class,
-                'choice_label' => 'id',
+            ->add('save', SubmitType::class, [
+                'label' => 'Envoyer',
             ])
         ;
     }
@@ -32,6 +28,8 @@ class CreateProgrammeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Programme::class,
+
+
         ]);
     }
 }

@@ -428,14 +428,14 @@ class InterfaceController extends AbstractController
 
 //----------------------------------------------------------------------------------------------------------------
 
-   // Suppression d'un module en session
+   // Suppression d'un programme en session
    #[Route('/interface/{sessionId}/{programmeId}/removeProgrammeToSession', name: 'deleteModule')]
-   public function removeModuleToSession(SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId, int $programmeId): Response
+   public function removeModuleToSession(SessionRepository $sessionRepository, ProgrammeRepository $programmeRepository,EntityManagerInterface $entityManager, int $sessionId, int $programmeId): Response
    {
         // Recherche la session par son id
         $session = $sessionRepository->findOneById($sessionId);  
         // Recherche le module par son id
-        $programme = $entityManager->getRepository(Programme::class)->find($programmeId);
+        $programme = $programmeRepository->findOneById($programmeId);  
 
        // Vérifie si l'entité programme a été trouvée
        if (!$programme) {
@@ -445,10 +445,8 @@ class InterfaceController extends AbstractController
        }
        
        //remove notifie à doctrine que nous cherchons à suprimer un élément    
-        $delete = $session->removeProgramme($programme);
+        $entityManager->remove($programme);
 
-       $entityManager->persist($delete);
-       //la supression ne prend effect qu'avec flush
        $entityManager->flush();
 
        // Redirige vers la route 'interface' avec l'ID de la session
