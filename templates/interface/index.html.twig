@@ -28,7 +28,21 @@
             <div class="column">
                 <p> {{ "Module compris" }}</p>
                 {% for programme in session.programmes %}
-                    <p>{{ programme.module.nomModule }}</p>            
+                    <p>{{ programme.module.nomModule }}</p><br>            
+                {% endfor %}
+            </div>
+
+            <div class="column">
+                <p>{{ "Durée" }}</p>
+                {% for programme in session.programmes %}
+                    <p>{{ programme.duree }}</p>
+                    <button class="editProgramme">Edit</button>
+                    <div class="formEditProgramme">
+                        <form action="/interface/{{session.id}}/{{programme.id}}/editProgrammeToSession" method="post">
+                            <input type="number" name="duree" required>
+                            <button type="submit" name="submit">Modifier</button>
+                        </form>
+                    </div>      
                 {% endfor %}
             </div>
             <div class="column">

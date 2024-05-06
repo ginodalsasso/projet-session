@@ -11,6 +11,7 @@ use App\Form\CreateModuleType;
 use App\Form\CreateSessionType;
 use Doctrine\ORM\EntityManager;
 use App\Form\CreateFormationType;
+use App\Form\CreateProgrammeType;
 use App\Form\CreateStagiaireType;
 use App\Repository\ModuleRepository;
 use App\Repository\SessionRepository;
@@ -118,7 +119,7 @@ class InterfaceController extends AbstractController
     }
     //--------------------------------------------------SUPPRIMER STAGIAIRE ------------------------------------------------------
     // Suppression d'un stagiaire
-    #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete',  methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete', requirements: ['id' => '\d+'])]
     public function deleteStagiaire(EntityManagerInterface $entityManager, int $id): Response
     {
         $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($id); 
@@ -163,6 +164,8 @@ class InterfaceController extends AbstractController
 
             // Exécute les requêtes pour enregistrer la nouvelle session dans la base de données (INSERT)           
             $entityManager->flush();
+            
+            $this->addFlash('success', 'La session à été ajoutée/modifiée');
             // Redirige vers la route 'app_session'
             return $this->redirectToRoute('app_session');
         }
@@ -217,6 +220,8 @@ class InterfaceController extends AbstractController
 
             // Exécute les requêtes pour enregistrer le nouveau module dans la base de données (INSERT)           
             $entityManager->flush();
+
+            $this->addFlash('success', 'Le module à été ajouté/modifié');
             // Redirige vers la route 'app_module'
             return $this->redirectToRoute('app_module');
         }
@@ -272,6 +277,9 @@ class InterfaceController extends AbstractController
 
             // Exécute les requêtes pour enregistrer la nouvelle formation dans la base de données (INSERT)           
             $entityManager->flush();
+
+            $this->addFlash('success', 'La formation à été ajoutée/modifiée');
+
             // Redirige vers la route 'app_formation'
             return $this->redirectToRoute('app_formation');
         }
@@ -297,16 +305,11 @@ class InterfaceController extends AbstractController
         //la supression ne prend effect qu'avec flush
         $entityManager->flush();
         // Redirige vers la route 'app_module'
+
         $this->addFlash('success', 'La formation a bien été suprimée');
 
         return $this->redirectToRoute('app_formation'); 
     }
-
-
-
-
-
-
 
 
 //--------------------------------------------------AJOUTER / SUPPRIMER UN STAGIAIRE EN SESSION ------------------------------------------------------
@@ -343,6 +346,8 @@ class InterfaceController extends AbstractController
         $session->addStagiaire($stagiaire);
         // Persiste les modifications dans la base de données
         $entityManager->flush();
+
+        $this->addFlash('success', 'Le stagiaire a été ajouté à la session');
 
         // Redirige vers la route 'interface' avec l'ID de la session
         return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
@@ -384,6 +389,8 @@ class InterfaceController extends AbstractController
         //la supression ne prend effect qu'avec flush
         $entityManager->flush();
 
+        $this->addFlash('success', 'Le stagiaire a été enlevé de la session');
+
         // Redirige vers la route 'interface' avec l'ID de la session
         return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
     }
@@ -421,6 +428,8 @@ class InterfaceController extends AbstractController
         // Persiste les modifications dans la base de données
         $entityManager->flush();
 
+        $this->addFlash('success', 'La module à été ajoutée à la session');
+
         // Redirige vers la route 'interface' avec l'ID de la session
         return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
 
@@ -452,4 +461,26 @@ class InterfaceController extends AbstractController
        // Redirige vers la route 'interface' avec l'ID de la session
        return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
    }
+
+   #[Route('/interface/{sessionId}/{programmeId}/editProgrammeToSession', name: 'editModule')]
+   public function editProgrammeToSession(ModuleRepository $moduleRepository, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId, int $moduleId): Response
+   {    
+
+       // Recherche la session par son id
+       $session = $sessionRepository->findOneById($sessionId);  
+
+       // Vérifie si l'id Session a été trouvé
+       if (!$session) {
+           throw $this->createNotFoundException(
+               'Session non trouvée pour l\'id '.$sessionId
+           );
+       }
+
+
+       // Redirige vers la route 'interface' avec l'ID de la session
+       return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+
+   }
+
+   
 }
