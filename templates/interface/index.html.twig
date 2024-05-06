@@ -40,7 +40,7 @@
             <div class="column">
                 <p>{{ "Soustraire un module" }}</p>
                 {% for programme in session.programmes %}
-                    <p>{{ "-" }}</p>          
+                    <a href="{{ path('deleteModule', {'sessionId': session.id, 'programmeId':programme.id}) }} ">{{ "-" }}</a>    <br>      
                 {% endfor %}
             </div>
         </div>
@@ -63,7 +63,7 @@
             <div class="column">
                 <p>{{ "Ajouter un module" }}</p> 
                 {% for moduleNonInscrit in moduleNonInscrits %}
-                    <a href="{{ path('addProgramme', {'sessionId': session.id, 'programmeId':moduleNonInscrit.id}) }} ">{{ "+" }}</a> <br>
+                    <a href="{{ path('addProgramme', {'sessionId': session.id, 'moduleId':moduleNonInscrit.id}) }} ">{{ "+" }}</a> <br>
                 {% endfor %}
             </div>
         </div>

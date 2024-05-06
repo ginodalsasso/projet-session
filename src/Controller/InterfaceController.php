@@ -9,6 +9,7 @@ use App\Entity\Programme;
 use App\Entity\Stagiaire;
 use App\Form\CreateModuleType;
 use App\Form\CreateSessionType;
+use Doctrine\ORM\EntityManager;
 use App\Form\CreateFormationType;
 use App\Form\CreateStagiaireType;
 use App\Repository\ModuleRepository;
@@ -29,7 +30,7 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------AFFICHAGE------------------------------------------------------
     // affichage de la gestion d'une session
     #[Route('/interface/{id}', name: 'app_interface', requirements: ['id' => '\d+'])]
-    public function index(int $id, Session $session = null, SessionRepository $sessionRepository): Response
+    public function index(int $id, Session $session = null, SessionRepository $sessionRepository, ModuleRepository $moduleRepository): Response
     {
         // Vérifie si l'entité Session a été trouvée
         if (!$session) {
@@ -38,7 +39,7 @@ class InterfaceController extends AbstractController
             );
         }
         $nonInscrits = $sessionRepository->StagiairesNonInscrits($session->getId());
-        $moduleNonInscrits = $sessionRepository->ModulesNonInscrits($session->getId());
+        $moduleNonInscrits = $moduleRepository->ModulesNonInscrits($session->getId());
 
         return $this->render('interface/index.html.twig', [
             'session' => $session,
@@ -388,37 +389,35 @@ class InterfaceController extends AbstractController
     }
 
 
+//--------------------------------------------------AJOUTER / SUPPRIMER UN MODULE EN SESSION ------------------------------------------------------
 
-    #[Route('/interface/{sessionId}/{programmeId}/addProgrammeToSession', name: 'addProgramme')]
-    public function addProgrammeToSession(EntityManagerInterface $entityManager, int $sessionId, int $programmeId): Response
+    #[Route('/interface/{sessionId}/{moduleId}/addProgrammeToSession', name: 'addProgramme')]
+    public function addProgrammeToSession(ModuleRepository $moduleRepository, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId, int $moduleId): Response
     {    
-        // Recherche la session par son id
-        $session = $entityManager->getRepository(Session::class)->find($sessionId);  
 
-        // Vérifie si l'entité Session a été trouvée
+        // Recherche la session par son id
+        $session = $sessionRepository->findOneById($sessionId);  
+        $module = $moduleRepository->findOneById($moduleId);  
+
+        // Vérifie si l'id Session a été trouvé
         if (!$session) {
             throw $this->createNotFoundException(
                 'Session non trouvée pour l\'id '.$sessionId
             );
         }
-        
-        // Recherche le stagiaire par son id
-        $programme = $entityManager->getRepository(Programme::class)->find($programmeId);
-
-        // Vérifie si l'entité Stagiaire a été trouvée
-        if (!$programme) {
+        // Vérifie si l'id module a été trouvé
+        if (!$module) {
             throw $this->createNotFoundException('
-                Programme non trouvé pour l\'id '.$programmeId
+                Module non trouvé pour l\'id '.$moduleId
             );
         }
-        // Vérifie si le stagiaire est déjà inscrit dans la session
-        if ($session->getProgrammes()->contains($programme)) {
-            return new Response(
-                'Le programme est déjà inscrit dans cette session');
-        }
+        
+        $programme = new Programme();
+        $programme->setDuree(1);
+        $programme->setModule($module);
+        $programme->setSession($session);
 
-        // addStagiaire est une methode provenant de l'entité stagiaire 
-        $session->addProgramme($programme);
+        $entityManager->persist($programme);
         // Persiste les modifications dans la base de données
         $entityManager->flush();
 
@@ -427,4 +426,32 @@ class InterfaceController extends AbstractController
 
     }
 
+//----------------------------------------------------------------------------------------------------------------
+
+   // Suppression d'un module en session
+   #[Route('/interface/{sessionId}/{programmeId}/removeProgrammeToSession', name: 'deleteModule')]
+   public function removeModuleToSession(SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId, int $programmeId): Response
+   {
+        // Recherche la session par son id
+        $session = $sessionRepository->findOneById($sessionId);  
+        // Recherche le module par son id
+        $programme = $entityManager->getRepository(Programme::class)->find($programmeId);
+
+       // Vérifie si l'entité programme a été trouvée
+       if (!$programme) {
+           throw $this->createNotFoundException('
+               Programme non trouvé pour l\'id '.$programmeId
+           );
+       }
+       
+       //remove notifie à doctrine que nous cherchons à suprimer un élément    
+        $delete = $session->removeProgramme($programme);
+
+       $entityManager->persist($delete);
+       //la supression ne prend effect qu'avec flush
+       $entityManager->flush();
+
+       // Redirige vers la route 'interface' avec l'ID de la session
+       return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+   }
 }

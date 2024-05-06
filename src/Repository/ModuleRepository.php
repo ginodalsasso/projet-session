@@ -45,4 +45,37 @@ class ModuleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function ModulesNonInscrits($session_id)
+    {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+       
+        // sélectionner tous les modules d'une session dont l'id est passé en paramètre
+        $qb->select('m')
+            ->from('App\Entity\Module', 'm')
+            ->leftJoin('m.programmes', 'mp')
+            ->where('mp.session = :id');
+
+        $sub = $em->createQueryBuilder();
+        // sélectionner tous les modules qui ne SONT PAS (NOT IN) dans le résultat précédent
+        // on obtient donc les modules non inscrits pour une session définie
+        $sub->select('mt')
+            ->from('App\Entity\Module', 'mt')
+            ->where($sub->expr()->notIn('mt.id', $qb->getDQL()))
+            // requête paramétrée de l'id récupéré précédemment
+            ->setParameter('id', $session_id);
+            // trier la liste des stagiaires sur le nom de famille
+            // ->orderBy('mo.nomModule');
+       
+        // renvoyer le résultat
+        $query = $sub->getQuery();
+        return $query->getResult();
+
+        // SELECT * 
+        // FROM module m
+        // LEFT JOIN programme p ON m.id = p.module_id
+        // WHERE m.id NOT IN (SELECT module_id FROM programme WHERE session_id = 3)
+       
+    }
 }
