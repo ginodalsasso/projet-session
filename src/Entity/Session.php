@@ -77,6 +77,7 @@ class Session
 
         return $this;
     }
+
     
     public function getDateDebut(): ?\DateTimeInterface
     {

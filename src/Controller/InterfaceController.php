@@ -315,11 +315,17 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------AJOUTER / SUPPRIMER UN STAGIAIRE EN SESSION ------------------------------------------------------
 
     #[Route('/interface/{sessionId}/{stagiaireId}/addStagiaireToSession', name: 'addStagiaire')]
-    public function addStagiaireToSession(EntityManagerInterface $entityManager, int $sessionId, int $stagiaireId): Response
+    public function addStagiaireToSession(EntityManagerInterface $entityManager, SessionRepository $sessionRepository, int $sessionId, int $stagiaireId): Response
     {    
         // Recherche la session par son id
-        $session = $entityManager->getRepository(Session::class)->find($sessionId);  
-
+        
+        $session = $sessionRepository->findOneById($sessionId);  
+        // $nbPlaces = $entityManager->getRepository(Session::class);
+        // dd($entityManager->getRepository(Session::class)->getStagiaires()); die;
+        // $stagiaire =  $entityManager->getRepository(Session::class)->getStagiaires();
+        // if($nbPlaces->getNbPlaces() - $nbPlaces->count($stagiaire) == 0){
+        //     $this->addFlash('error', 'La session est complète');
+        // }
         // Vérifie si l'entité Session a été trouvée
         if (!$session) {
             throw $this->createNotFoundException(
@@ -396,7 +402,7 @@ class InterfaceController extends AbstractController
     }
 
 
-//--------------------------------------------------AJOUTER / SUPPRIMER UN MODULE EN SESSION ------------------------------------------------------
+//--------------------------------------------------AJOUTER / SUPPRIMER / MODIFIER UN MODULE EN SESSION ------------------------------------------------------
 
     #[Route('/interface/{sessionId}/{moduleId}/addProgrammeToSession', name: 'addProgramme')]
     public function addProgrammeToSession(ModuleRepository $moduleRepository, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId, int $moduleId): Response
@@ -462,25 +468,50 @@ class InterfaceController extends AbstractController
        return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
    }
 
+
+   // modification de la durée d'un programme en session
    #[Route('/interface/{sessionId}/{programmeId}/editProgrammeToSession', name: 'editModule')]
-   public function editProgrammeToSession(ModuleRepository $moduleRepository, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId, int $moduleId): Response
+   public function editProgrammeToSession(Request $request, ProgrammeRepository $programmeRepository, int $programmeId, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId): Response
    {    
+        // Recherche la session par son id
+        $session = $sessionRepository->findOneById($sessionId);  
+        // Vérifie si l'id Session a été trouvé
+        if (!$session) {
+            throw $this->createNotFoundException(
+                'Session non trouvée pour l\'id '.$sessionId
+            );
+        }
+        if ($request->isMethod('POST')){
+            // Récupération de la durée depuis le formulaire
+            $duree = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_NUMBER_INT);
 
-       // Recherche la session par son id
-       $session = $sessionRepository->findOneById($sessionId);  
+            if ($duree && $duree !== null) { // Vérification que la durée a été soumise
+                $programme = $programmeRepository->findOneById($programmeId);
 
-       // Vérifie si l'id Session a été trouvé
-       if (!$session) {
-           throw $this->createNotFoundException(
-               'Session non trouvée pour l\'id '.$sessionId
-           );
-       }
+                if (!$programme) {
+                    throw $this->createNotFoundException(
+                        'Programme non trouvé pour l\'id '.$programmeId
+                    );
+                }
+                // Modification de la durée du programme
+                $programme->setDuree($duree);
+                // Persiste les modifications dans la base de données
+                $entityManager->persist($programme);
+                $entityManager->flush();
 
+                $this->addFlash('success', 'La durée du module a été modifiée avec succès');
 
-       // Redirige vers la route 'interface' avec l'ID de la session
-       return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+                // Redirection vers la route 'app_interface' avec l'ID de la session
+                return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+            } else{
+                // Si la méthode n'est pas POST ajout d'un message d'erreur
+                $this->addFlash('error', 'Soumission de formulaire invalide');
+            }
 
-   }
-
-   
+        // Si la durée n'a pas été soumise, ajout d'un message d'erreur
+        $this->addFlash('error', 'La durée n\'est pas valide !');
+    }
+        // Redirection vers la route 'app_interface' avec l'ID de la session
+        return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+        }
 }

@@ -141,9 +141,19 @@ h1{
     margin-bottom: 10px;
 }
 
+.dureeProgramme{
+    display:flex;
+    height: 20px;
+}
+
+.dureeProgramme button{
+    margin-left: 10px;    
+}
+
 .formEditProgramme{
     display: none;
 }
+
 .formEditProgramme.active{
     position: fixed;
     width: 100%;
