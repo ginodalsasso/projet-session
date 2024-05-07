@@ -315,37 +315,34 @@ class InterfaceController extends AbstractController
 //--------------------------------------------------AJOUTER / SUPPRIMER UN STAGIAIRE EN SESSION ------------------------------------------------------
 
     #[Route('/interface/{sessionId}/{stagiaireId}/addStagiaireToSession', name: 'addStagiaire')]
-    public function addStagiaireToSession(EntityManagerInterface $entityManager, SessionRepository $sessionRepository, int $sessionId, int $stagiaireId): Response
+    public function addStagiaireToSession(EntityManagerInterface $entityManager, Session $session = null, SessionRepository $sessionRepository, int $sessionId, int $stagiaireId): Response
     {    
         // Recherche la session par son id
-        
-        $session = $sessionRepository->findOneById($sessionId);  
-        // $nbPlaces = $entityManager->getRepository(Session::class);
-        // dd($entityManager->getRepository(Session::class)->getStagiaires()); die;
-        // $stagiaire =  $entityManager->getRepository(Session::class)->getStagiaires();
-        // if($nbPlaces->getNbPlaces() - $nbPlaces->count($stagiaire) == 0){
-        //     $this->addFlash('error', 'La session est complète');
-        // }
+        $session = $sessionRepository->findOneById($sessionId);
         // Vérifie si l'entité Session a été trouvée
         if (!$session) {
             throw $this->createNotFoundException(
                 'Session non trouvée pour l\'id '.$sessionId
             );
         }
-        
         // Recherche le stagiaire par son id
         $stagiaire = $entityManager->getRepository(Stagiaire::class)->find($stagiaireId);
 
-        // Vérifie si l'entité Stagiaire a été trouvée
+        // Si l'entité Stagiaire a été trouvée
         if (!$stagiaire) {
             throw $this->createNotFoundException('
                 Stagiaire non trouvé pour l\'id '.$stagiaireId
             );
         }
-        // Vérifie si le stagiaire est déjà inscrit dans la session
+        // Si le stagiaire est déjà inscrit dans la session
         if ($session->getStagiaires()->contains($stagiaire)) {
             return new Response(
                 'Le stagiaire est déjà inscrit dans cette session');
+        }
+        // Si le nombre de places est à 0
+        if($session->nbPlacesRestantes() == 0){    
+            $this->addFlash('error', 'La session est complète ! ');
+            return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
         }
 
         // addStagiaire est une methode provenant de l'entité stagiaire 
@@ -481,11 +478,15 @@ class InterfaceController extends AbstractController
                 'Session non trouvée pour l\'id '.$sessionId
             );
         }
+
+
+
         if ($request->isMethod('POST')){
             // Récupération de la durée depuis le formulaire
             $duree = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_NUMBER_INT);
+            $submittedToken = $request->getPayload()->get('token');
 
-            if ($duree && $duree !== null) { // Vérification que la durée a été soumise
+            if ($duree && $duree !== null && $this->isCsrfTokenValid('update-date', $submittedToken)) { // Vérification que la durée a été soumise
                 $programme = $programmeRepository->findOneById($programmeId);
 
                 if (!$programme) {

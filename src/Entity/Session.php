@@ -77,6 +77,19 @@ class Session
 
         return $this;
     }
+    //comtpe le nombre de la collection de stagiaires 
+    public function nbStagiaire() {
+        $nbStagiaire = count($this->stagiaires);
+
+        return $nbStagiaire;
+    }
+    //calcule le nombre de places restantes
+    public function nbPlacesRestantes() {
+        $nbStagiaire = count($this->stagiaires);
+        $nbPlacesRestantes = $this->nbPlaces - $nbStagiaire;
+
+        return $nbPlacesRestantes;
+    }
 
     
     public function getDateDebut(): ?\DateTimeInterface

@@ -15,11 +15,8 @@
         </div>    
         <div class="card">
             <p>{{ 'Nombre de places: '~ session.nbPlaces }}</p>
-            {# calcul le nom de place reservée dans le tableau stagiaires #}
-            <p>{{ 'Places reservées: 0' ~ session.stagiaires|length }}</p>
-            {# soustraction pour le nombre de places restantes #}
-            {% set placesRestantes = session.nbPlaces - session.stagiaires|length %}
-            <p>{{ 'Places restantes: ' ~ placesRestantes }}</p>
+            <p>{{ 'Places reservées: ' ~ session.nbStagiaire }}</p>
+            <p>{{ 'Places restantes: ' ~ session.nbPlacesRestantes }}</p>
         </div>
     </div>
 
@@ -40,8 +37,10 @@
                         <button class="editProgramme">Edit</button>
                         <div class="formEditProgramme">
                             <form action="/interface/{{session.id}}/{{programme.id}}/editProgrammeToSession" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token('update-date') }}">
                                 <input type="number" name="duree" required>
                                 <button type="submit" name="submit">Modifier</button>
+                                <button type="submit" class="close-btn">Fermer</button>
                             </form>
                         </div>
                     </div>      
