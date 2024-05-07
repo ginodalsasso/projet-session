@@ -36,11 +36,11 @@
                         <p>{{ programme.duree }}</p>
                         <button class="editProgramme">Edit</button>
                         <div class="formEditProgramme">
+                            <button class="close-btn">x</button>
                             <form action="/interface/{{session.id}}/{{programme.id}}/editProgrammeToSession" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token('update-date') }}">
                                 <input type="number" name="duree" required>
                                 <button type="submit" name="submit">Modifier</button>
-                                <button type="submit" class="close-btn">Fermer</button>
                             </form>
                         </div>
                     </div>      

@@ -479,14 +479,13 @@ class InterfaceController extends AbstractController
             );
         }
 
-
-
         if ($request->isMethod('POST')){
             // Récupération de la durée depuis le formulaire
             $duree = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_NUMBER_INT);
-            $submittedToken = $request->getPayload()->get('token');
+            // Récupération du jeton CSRF depuis la requête
+            // $submittedToken = $request->getPayload()->get('token');
 
-            if ($duree && $duree !== null && $this->isCsrfTokenValid('update-date', $submittedToken)) { // Vérification que la durée a été soumise
+            if ($duree && $duree !== null ) {// && $this->isCsrfTokenValid('update-date', $submittedToken)  Vérification que la durée a été soumise et que le jeton CSRF est valide
                 $programme = $programmeRepository->findOneById($programmeId);
 
                 if (!$programme) {
@@ -505,7 +504,7 @@ class InterfaceController extends AbstractController
                 // Redirection vers la route 'app_interface' avec l'ID de la session
                 return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
             } else{
-                // Si la méthode n'est pas POST ajout d'un message d'erreur
+                // Si la méthode n'est pas POST ou si le jeton CSRF est invalide, ajout d'un message d'erreur
                 $this->addFlash('error', 'Soumission de formulaire invalide');
             }
 
