@@ -8,14 +8,16 @@
     <h1>Liste des sessions</h1>
     {% for session in sessions %}
         <div class="card">
-            <a href="{{ path('app_interface', {'id':session.id}) }}">{{ session.nomSession }}</a> <a href=" {{ path('app_editSession', {'id':session.id}) }} ">Editer</a>
-            
-            {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
-            {# cette methode permet de ne pas transiter les information de suppression via l'url #}
-            <form action=" {{ path('app_session_delete', {'id':session.id}) }}" method:"post">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit">Suprimer</button>
-            </form>
+            <a href="{{ path('app_interface', {'id':session.id}) }}">{{ session.nomSession }}</a><br>
+            {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
+                <a href=" {{ path('app_editSession', {'id':session.id}) }} ">Editer</a>
+                {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
+                {# cette methode permet de ne pas transiter les information de suppression via l'url #}
+                <form action=" {{ path('app_session_delete', {'id':session.id}) }}" method:"post">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit">Suprimer</button>
+                </form>
+            {% endif %}
             {{ 'Nombre de places: '~ session.nbPlaces}} <br>
             {{ 'Date de début de session: '~ session.debut}} <br>
             {{ 'Date de fin de session: '~ session.fin }} <br>
@@ -34,13 +36,13 @@
             {% for programme in session.programmes %}
                 {{ programme.module.nomModule }} {{ '(' ~ programme.module.categorie.nomCategorie ~ ')'}} <br>
             {% endfor %}
-
-            {% for stagiaire in session.stagiaires %}
-                <h2>Liste des stagiaires de la session</h2>
-                {{ stagiaire ~' '}} <br>
-            {% endfor %}
+            {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
+                {% for stagiaire in session.stagiaires %}
+                    <h2>Liste des stagiaires de la session</h2>
+                    {{ stagiaire ~' '}} <br>
+                {% endfor %}
+            {% endif %}
         </div>
         {% endfor %}
     </div>
 {% endblock %}
-    

@@ -33,10 +33,10 @@
                         {% if app.user %}  {# Utilisateur normal et admin #}
                             <li><a href="{{ path('app_logout') }}">Se Deconnecter</a></li>
                         {% else %}
+                            <li><a  {{app.current_route == 'app_register' ? 'class= active' : ''}} href="{{ path('app_register') }}">S'inscrire</a></li>
                             <li><a  {{app.current_route == 'app_login' ? 'class= active' : ''}} href="{{ path('app_login') }}">Se Connecter</a></li>
                         {% endif %}
 
-                        <li><a  {{app.current_route == 'app_register' ? 'class= active' : ''}} href="{{ path('app_register') }}">S'inscrire</a></li>
                     </ul>
                 </nav>
             </aside>
