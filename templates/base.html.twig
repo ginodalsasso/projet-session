@@ -21,10 +21,22 @@
                 <nav>
                     <ul>
                         <li><a {{app.current_route == 'app_session' ? 'class= active' : ''}} href="{{ path('app_session') }}">Liste des sessions</a></li>
-                        <li><a {{app.current_route == 'app_addSession' ? 'class= active' : ''}} href="{{ path('app_addSession') }}">Créer une session</a></li>
+                        
+                        {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
+                            <li><a {{app.current_route == 'app_addSession' ? 'class= active' : ''}} href="{{ path('app_addSession') }}">Créer une session</a></li>
+                        {% endif %}
+                        
                         <li><a  {{app.current_route == 'app_formation' ? 'class= active' : ''}} href="{{ path('app_formation') }}">Liste des formations</a></li>
                         <li><a  {{app.current_route == 'app_module' ? 'class= active' : ''}} href="{{ path('app_module') }}">Liste des modules</a></li>
                         <li><a  {{app.current_route == 'app_stagiaire' ? 'class= active' : ''}} href="{{ path('app_stagiaire') }}">Liste des stagiaires</a></li>
+                        
+                        {% if app.user %}  {# Utilisateur normal et admin #}
+                            <li><a href="{{ path('app_logout') }}">Se Deconnecter</a></li>
+                        {% else %}
+                            <li><a  {{app.current_route == 'app_login' ? 'class= active' : ''}} href="{{ path('app_login') }}">Se Connecter</a></li>
+                        {% endif %}
+
+                        <li><a  {{app.current_route == 'app_register' ? 'class= active' : ''}} href="{{ path('app_register') }}">S'inscrire</a></li>
                     </ul>
                 </nav>
             </aside>
