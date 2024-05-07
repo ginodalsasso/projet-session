@@ -22,13 +22,18 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestMatcher\MethodRequestMatcher;
 
+// si le controller entier ne regarde ue l'admin alors initialiser isGranted ici
+// #[IsGranted('ROLE_ADMIN')]
 class InterfaceController extends AbstractController
 {
 
 //--------------------------------------------------AFFICHAGE------------------------------------------------------
+    
+    #[IsGranted('ROLE_ADMIN')]
     // affichage de la gestion d'une session
     #[Route('/interface/{id}', name: 'app_interface', requirements: ['id' => '\d+'])]
     public function index(int $id, Session $session = null, SessionRepository $sessionRepository, ModuleRepository $moduleRepository): Response
@@ -87,6 +92,8 @@ class InterfaceController extends AbstractController
     
 //--------------------------------------------------CREER/EDITER STAGIAIRE------------------------------------------------------
     // affichage et création d'un stagiaire
+    
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/editStagiaire', name: 'app_addStagiaire')]
     #[Route('stagiaire/{id}/editStagiaire', name: 'app_editStagiaire', methods: ['GET', 'POST'],  requirements: ['id' => '\d+'])]
     public function add_editStagiaire(Stagiaire $stagiaire = null, EntityManagerInterface $entityManager, Request $request): Response
@@ -119,6 +126,7 @@ class InterfaceController extends AbstractController
     }
     //--------------------------------------------------SUPPRIMER STAGIAIRE ------------------------------------------------------
     // Suppression d'un stagiaire
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/stagiaire/delete/{id}', name: 'app_stagiaire_delete', requirements: ['id' => '\d+'])]
     public function deleteStagiaire(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -143,6 +151,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------CREER/EDITER SESSION------------------------------------------------------
     // affichage et création d'une session
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/editSession', name: 'app_addSession')]
     #[Route('/session/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function add_editSession(Session $session = null, EntityManagerInterface $entityManager, Request $request): Response
@@ -176,6 +185,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------SUPPRIMER SESSION ------------------------------------------------------
     // Suppression d'une session
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/session/delete/{id}', name: 'app_session_delete',  requirements: ['id' => '\d+'])]
     public function deleteSession(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -199,6 +209,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------CREER/EDITER MODULE------------------------------------------------------
     // affichage et création d'un module
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/editModule', name: 'app_addModule')]
     #[Route('/module/{id}/editModule', name: 'app_editModule', methods: ['GET', 'POST'],  requirements: ['id' => '\d+'])]
     public function add_editModule(Module $module = null, EntityManagerInterface $entityManager, Request $request): Response
@@ -233,6 +244,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------SUPPRIMER MODULE ------------------------------------------------------
     // Suppression d'une module
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/module/delete/{id}', name: 'app_module_delete',  requirements: ['id' => '\d+'])]
     public function deleteModule(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -256,6 +268,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------CREER/EDITER FORMATION------------------------------------------------------
     // affichage et création d'une formation
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/editFormation', name: 'app_addFormation')]
     #[Route('/formation/{id}/editFormation', name: 'app_editFormation', methods: ['GET', 'POST'],  requirements: ['id' => '\d+'])]
     public function add_editFormation(Formation $formation = null, EntityManagerInterface $entityManager, Request $request): Response
@@ -290,6 +303,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------SUPPRIMER FORMATION ------------------------------------------------------
     // Suppression d'une formation
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/formation/delete/{id}', name: 'app_formation_delete', requirements: ['id' => '\d+'])]
     public function deleteFormation(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -314,6 +328,7 @@ class InterfaceController extends AbstractController
 
 //--------------------------------------------------AJOUTER / SUPPRIMER UN STAGIAIRE EN SESSION ------------------------------------------------------
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/interface/{sessionId}/{stagiaireId}/addStagiaireToSession', name: 'addStagiaire')]
     public function addStagiaireToSession(EntityManagerInterface $entityManager, Session $session = null, SessionRepository $sessionRepository, int $sessionId, int $stagiaireId): Response
     {    
@@ -358,6 +373,7 @@ class InterfaceController extends AbstractController
 
 //----------------------------------------------------------------------------------------------------------------
 
+    #[IsGranted('ROLE_ADMIN')]
     // Suppression d'un stagiaire en session
     #[Route('/interface/{sessionId}/{stagiaireId}/removeStagiaireToSession', name: 'deleteStagiaire')]
     public function removeStagiaireToSession(EntityManagerInterface $entityManager, int $sessionId, int $stagiaireId): Response
@@ -400,7 +416,8 @@ class InterfaceController extends AbstractController
 
 
 //--------------------------------------------------AJOUTER / SUPPRIMER / MODIFIER UN MODULE EN SESSION ------------------------------------------------------
-
+    
+    #[IsGranted('ROLE_ADMIN')]  
     #[Route('/interface/{sessionId}/{moduleId}/addProgrammeToSession', name: 'addProgramme')]
     public function addProgrammeToSession(ModuleRepository $moduleRepository, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId, int $moduleId): Response
     {    
@@ -439,7 +456,8 @@ class InterfaceController extends AbstractController
     }
 
 //----------------------------------------------------------------------------------------------------------------
-
+    
+    #[IsGranted('ROLE_ADMIN')]
    // Suppression d'un programme en session
    #[Route('/interface/{sessionId}/{programmeId}/removeProgrammeToSession', name: 'deleteModule')]
    public function removeModuleToSession(SessionRepository $sessionRepository, ProgrammeRepository $programmeRepository,EntityManagerInterface $entityManager, int $sessionId, int $programmeId): Response
@@ -465,8 +483,8 @@ class InterfaceController extends AbstractController
        return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
    }
 
-
    // modification de la durée d'un programme en session
+   #[IsGranted('ROLE_ADMIN')]
    #[Route('/interface/{sessionId}/{programmeId}/editProgrammeToSession', name: 'editModule')]
    public function editProgrammeToSession(Request $request, ProgrammeRepository $programmeRepository, int $programmeId, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, int $sessionId): Response
    {    
