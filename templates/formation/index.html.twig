@@ -8,19 +8,22 @@
     <h1>Liste des formations</h1>
     <div class="card">
         {% for formation in formations %}
-            {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
-                <a href=" {{ path('app_editFormation', {'id':formation.id}) }} ">Editer</a>
-                {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
-                {# cette methode permet de ne pas transiter les information de suppression via l'url #}
-                <form action=" {{ path('app_formation_delete', {'id':formation.id}) }}" method:"post">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit">Suprimer</button>
-                </form>
-            {% endif %}
-            {{ formation.nomFormation }}
-            {% for session in formation.sessions %}
-                {{ session }}
-            {% endfor %} <br>
+            <div class="admin-btn-display">
+                {{ formation.nomFormation }}
+                {% for session in formation.sessions %}
+                    {{ session }}
+                {% endfor %} <br>
+                {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
+                    <a class="admin-btn" href=" {{ path('app_editFormation', {'id':formation.id}) }} ">Editer</a>
+                    {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
+                    {# cette methode permet de ne pas transiter les information de suppression via l'url #}
+                    <form action=" {{ path('app_formation_delete', {'id':formation.id}) }}" method:"post">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="admin-btn" type="submit">Suprimer</button>
+                    </form>
+                {% endif %}
+
+            </div>
         {% endfor %}
     </div>
         <a class="btn-create" href=" {{ path('app_addFormation') }} ">Ajouter une formation</a>

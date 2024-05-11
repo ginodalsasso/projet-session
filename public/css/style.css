@@ -87,18 +87,64 @@ nav ul li a{
     opacity: 1;
 }
 
-/* ------------------------------body-------------------------------------- */
+/* ------------------------------buttons-------------------------------------- */
+
+
 .btn-create{
     background-color: var(--btn-colour);
     text-decoration: none;
     margin: 20px;
-    padding: 6px;
+    padding: 6px 12px;
     border-radius: 10px;
     border: solid var(--font-color);
     text-decoration: none;
     color: var(--font-color);
     font-weight: 500;
 }
+
+.btn-create:hover{
+    background-color: var(--bg-colour);
+    text-decoration: none;
+    margin: 20px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: solid var(--font-color);
+    text-decoration: none;
+    color: var(--font-color);
+    font-weight: 500;
+}
+
+.admin-btn{
+    padding: 6px 12px;
+    border-radius: 10px;
+    background-color: #e7e7e7; 
+    color: black;
+    text-decoration: none;
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+    border: 2px solid var(--stroke-colour);
+    cursor: pointer;
+}
+.admin-btn:hover{
+    padding: 6px 12px;
+    border-radius: 10px;
+    background-color: var(--bg-colour); 
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+    border: 2px solid var(--stroke-colour);
+    cursor: pointer;
+}
+
+.admin-btn-display{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ------------------------------body-------------------------------------- */
+
 
 h1{
     margin: 25px 0 25px 20px;
@@ -165,6 +211,7 @@ h1{
     justify-content: center;
     align-items: center;
     background-color: rgba(0,0,0,0.5);}
+
 
 
 /* ------------------------------media queries-------------------------------------- */

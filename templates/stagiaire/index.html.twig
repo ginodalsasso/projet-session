@@ -8,25 +8,30 @@
     
     {% for stagiaire in stagiaires %} 
     <div class="card">
-        <a href=" {{ path('app_editStagiaire', {'id':stagiaire.id}) }} ">Editer</a>
-        {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
-        {# cette methode permet de ne pas transiter les information de suppression via l'url #}
-        <form action=" {{ path('app_stagiaire_delete', {'id':stagiaire.id}) }}" method:"POST">
-            <input type="hidden" name="_method" value="DELETE">
-            <button type="submit">Suprimer</button>
-        </form>
         {{ 'Nom de fammille: ' ~ stagiaire.nom }} <br> 
         {{  'Prénom: ' ~ stagiaire.prenom }} <br> 
         {{  'Date de naissance: ' ~ stagiaire.getNaissance }} <br> 
         {{  'Email: ' ~ stagiaire.email }} <br> 
         {{  'Téléphone: ' ~ stagiaire.telephone }} <br>   
+
         {% if stagiaire.sessions == true %}                    
             {% for session in stagiaire.sessions %}
             {{ 'Session: ' }} <br>
                 {{ session.nomSession }}
             {% endfor %}
         {% endif %}
-            </div>
+        <div class="admin-btn-display">
+            {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
+                <a class="admin-btn" href=" {{ path('app_editStagiaire', {'id':stagiaire.id}) }} ">Editer</a>
+                {# la methode fonctionne sans modifier le framework.yaml "http_method_override: false" #}
+                {# cette methode permet de ne pas transiter les information de suppression via l'url #}
+                <form action=" {{ path('app_stagiaire_delete', {'id':stagiaire.id}) }}" method:"POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="admin-btn" type="submit">Suprimer</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
     {% endfor %}
     <a class="btn-create" href=" {{ path('app_addStagiaire') }} ">Ajouter un stagiaire</a>
 </div>
