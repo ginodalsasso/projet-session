@@ -34,7 +34,7 @@
                 {% for programme in session.programmes %}
                     <div class='dureeProgramme'>
                         <p>{{ programme.duree }}</p>
-                        <button class="editProgramme">Edit</button>
+                        <button>Edit</button>
                         <div class="formEditProgramme">
                             <button class="close-btn">x</button>
                             <form action="/interface/{{session.id}}/{{programme.id}}/editProgrammeToSession" method="post" enctype="multipart/form-data">
