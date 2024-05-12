@@ -1,4 +1,4 @@
-# Training Session Manager
+# Professional training session management
 
 This project is an application for managing training sessions aimed at administrators of a training center. The application allows administrators to manage training sessions, modules, categories, and student registrations.
 
