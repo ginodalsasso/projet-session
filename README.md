@@ -12,7 +12,7 @@ This project is an application for managing training sessions aimed at administr
 
 ## Technologies Used
 
-- **Languages:** HTML, CSS, PHP, Javascript.
+- **Languages:** HTML, CSS, PHP, Javascript, Twig.
 - **Framework:** Symfony.
 - **Database:** MySQL.
 - **Tools:** HeidiSQL.
