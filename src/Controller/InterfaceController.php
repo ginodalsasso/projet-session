@@ -22,6 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestMatcher\MethodRequestMatcher;
@@ -114,10 +115,16 @@ class InterfaceController extends AbstractController
             
             $this->addFlash('success', 'La session à été ajoutée/modifiée');
             // Redirige vers la route 'app_session'
-            return $this->redirectToRoute('app_session');
+            // return $this->redirectToRoute('app_session');
+            
+            // Retourner une réponse HTTP 200 (OK)
+            return new Response('', 200);
+
+
         }
         return $this->render('session/edit.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'session' => $session
         ]);
     }
 

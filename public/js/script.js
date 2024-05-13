@@ -32,6 +32,42 @@ for (let i = 0; i < formProgramme.length; i++) {
 
 
 
+// Requète Ajax pour l'édition d'une session (en javascript) --------------------------------------
+// Attend que le DOM soit entièrement chargé
+document.addEventListener('DOMContentLoaded', function() {
+    var editSessionBtns = document.querySelectorAll('.editSessionBtn');
+    
+    editSessionBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var sessionId = btn.getAttribute('data-session-id');
+            editSessionRequest(sessionId);
+        });
+    });
+});
+
+function editSessionRequest(sessionId) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // La requête a réussi
+                // Redirection vers la route 'app_session'
+                window.location.href = '/session';
+            } else {
+                // La requête a échoué
+                console.error("Erreur de requête: " + xhr.status);
+                // Afficher un message d'erreur
+                alert("Une erreur est survenue lors de l'ajout/modification de la session.");
+            }
+        }
+    };
+    
+    xhr.open("POST", '/session/' + sessionId + '/editSession', true);
+    xhr.send();  // Envoyer la requête
+}
+
+
 //Requète Ajax pour la soustraction d'un module (en javascript) --------------------------------------
 // // Attend que le DOM soit entièrement chargé
 // document.addEventListener('DOMContentLoaded', function() {
