@@ -48,6 +48,7 @@ body{
 }
 
 aside{
+    display: block;
     float: left;
     width: clamp(280px, 50vw, 300px);
     background-color: var(--cards-colour);
@@ -241,8 +242,19 @@ select
 
 @media (max-width: 950px) {
     body{ 
-        width: 100vw; }
+        width: 100vw; 
+    }
 
+    aside{
+        width: unset;
+        border-left: none;
+        background-color: unset;
+        padding: 10px; 
+    }
+
+    .container{
+        width: 80vw;
+    }
 
     /* Burger Menu */
     .sidenav{
@@ -260,12 +272,11 @@ select
     .sidenav.active{
         left: 0;
     }
-    
-    .nav_list li a{
-        display: block;
-        margin: 20px;
-    }
 
+    nav ul li{
+        padding: 20px;
+    }
+    
     .sidenav .close{
         display: block;
         text-decoration: none;
@@ -297,10 +308,11 @@ select
         margin: 10px;
     }
     
-    .admin-btn-display{
-        flex-direction: column;
-        align-items: flex-start;
+    .column_content{
+        display: grid;
+        grid-template-columns: 50% 50%;
     }
+
     .card_next_to, .card_next{
         grid-template-columns: none;
     }

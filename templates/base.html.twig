@@ -17,9 +17,9 @@
         {% include 'messages/flash.html.twig' %}
         <div class="wrapper">
             <aside>
-                <p class="logo">KABOUM</p>
                 <nav>
                     <div id="mySidenav" class="sidenav">
+                        <p class="logo">KABOUM</p>
                         <a href="#" id="closeBtn" class="close">x</a>
                         <ul>
                             <li><a {{app.current_route == 'app_session' ? 'class= active' : ''}} href="{{ path('app_session') }}">Liste des sessions</a></li>

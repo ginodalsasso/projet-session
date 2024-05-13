@@ -445,9 +445,9 @@ class InterfaceController extends AbstractController
             // Récupération de la durée depuis le formulaire
             $duree = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_NUMBER_INT);
             // Récupération du jeton CSRF depuis la requête
-            // $submittedToken = $request->getPayload()->get('token');
+            $submittedToken = $request->getPayload()->get('csrf_token');
 
-            if ($duree && $duree !== null ) {// && $this->isCsrfTokenValid('update-date', $submittedToken)  Vérification que la durée a été soumise et que le jeton CSRF est valide
+            if ($duree && $duree !== null && $this->isCsrfTokenValid('update-date', $submittedToken)) {// Vérification que la durée a été soumise et que le jeton CSRF est valide
                 $programme = $programmeRepository->findOneById($programmeId);
 
                 if (!$programme) {
