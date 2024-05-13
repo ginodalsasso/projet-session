@@ -419,9 +419,14 @@ class InterfaceController extends AbstractController
         $this->addFlash('success', 'La module à été soustrait de la session');
 
        // Redirige vers la route 'interface' avec l'ID de la session
-       return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+    //    return $this->redirectToRoute('app_interface', ['id' => $session->getId()]);
+    
+    // Retourner une réponse HTTP 200 (OK)
+    return new Response('', 200);
    }
 
+
+   
    // modification de la durée d'un programme en session
    #[IsGranted('ROLE_ADMIN')]
    #[Route('/interface/{sessionId}/{programmeId}/editProgrammeToSession', name: 'editModule')]

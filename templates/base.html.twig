@@ -19,31 +19,41 @@
             <aside>
                 <p class="logo">KABOUM</p>
                 <nav>
-                    <ul>
-                        <li><a {{app.current_route == 'app_session' ? 'class= active' : ''}} href="{{ path('app_session') }}">Liste des sessions</a></li>
-                        
-                        {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
-                            <li><a {{app.current_route == 'app_addSession' ? 'class= active' : ''}} href="{{ path('app_addSession') }}">Créer une session</a></li>
-                        {% endif %}
-                        
-                        <li><a  {{app.current_route == 'app_formation' ? 'class= active' : ''}} href="{{ path('app_formation') }}">Liste des formations</a></li>
-                        <li><a  {{app.current_route == 'app_module' ? 'class= active' : ''}} href="{{ path('app_module') }}">Liste des modules</a></li>
-                        <li><a  {{app.current_route == 'app_stagiaire' ? 'class= active' : ''}} href="{{ path('app_stagiaire') }}">Liste des stagiaires</a></li>
-                        
-                        {% if app.user %}  {# Utilisateur normal et admin #}
-                            <li><a href="{{ path('app_logout') }}">Se Deconnecter</a></li>
-                        {% else %}
-                            <li><a  {{app.current_route == 'app_register' ? 'class= active' : ''}} href="{{ path('app_register') }}">S'inscrire</a></li>
-                            <li><a  {{app.current_route == 'app_login' ? 'class= active' : ''}} href="{{ path('app_login') }}">Se Connecter</a></li>
-                        {% endif %}
-
-                    </ul>
+                    <div id="mySidenav" class="sidenav">
+                        <a href="#" id="closeBtn" class="close">x</a>
+                        <ul>
+                            <li><a {{app.current_route == 'app_session' ? 'class= active' : ''}} href="{{ path('app_session') }}">Liste des sessions</a></li>
+                            
+                            {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
+                                <li><a {{app.current_route == 'app_addSession' ? 'class= active' : ''}} href="{{ path('app_addSession') }}">Créer une session</a></li>
+                            {% endif %}
+                            
+                            <li><a  {{app.current_route == 'app_formation' ? 'class= active' : ''}} href="{{ path('app_formation') }}">Liste des formations</a></li>
+                            <li><a  {{app.current_route == 'app_module' ? 'class= active' : ''}} href="{{ path('app_module') }}">Liste des modules</a></li>
+                            <li><a  {{app.current_route == 'app_stagiaire' ? 'class= active' : ''}} href="{{ path('app_stagiaire') }}">Liste des stagiaires</a></li>
+                            
+                            {% if app.user %}  {# Utilisateur normal et admin #}
+                                <li><a href="{{ path('app_logout') }}">Se Deconnecter</a></li>
+                            {% else %}
+                                <li><a  {{app.current_route == 'app_register' ? 'class= active' : ''}} href="{{ path('app_register') }}">S'inscrire</a></li>
+                                <li><a  {{app.current_route == 'app_login' ? 'class= active' : ''}} href="{{ path('app_login') }}">Se Connecter</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <a href="#" id="openBtn">
+                        <span class="burger-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </a>
                 </nav>
             </aside>
             
             {% block body %}
         </div>
         {% endblock %}
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="{{ asset('js/script.js')}}"></script>
     </body>
 </html>

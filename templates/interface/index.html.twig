@@ -34,7 +34,7 @@
                 {% for programme in session.programmes %}
                     <div class='dureeProgramme'>
                         <p>{{ programme.duree }}</p>
-                        <button>Edit</button>
+                        <button class="editProgramme">Edit</button>
                         <div class="formEditProgramme">
                             <button class="close-btn">x</button>
                             <form action="/interface/{{session.id}}/{{programme.id}}/editProgrammeToSession" method="post" enctype="multipart/form-data">
@@ -55,8 +55,8 @@
             <div class="column">
                 <p>{{ "Soustraire un module" }}</p>
                 {% for programme in session.programmes %}
-                    <a href="{{ path('deleteModule', {'sessionId': session.id, 'programmeId':programme.id}) }} ">{{ "Enlever" }}</a>    <br>      
-                {% endfor %}
+                {# Les attributs data-session-id et data-programme-id sont utilisés pour stocker les identifiants de session et de programme respectivement #}
+                <a class="delete-module-btn" href="#" data-session-id="{{ session.id }}" data-programme-id="{{ programme.id }}">{{ "Enlever" }}</a><br>                {% endfor %}
             </div>
         </div>
     </div>
