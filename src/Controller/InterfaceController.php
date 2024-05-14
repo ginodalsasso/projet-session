@@ -113,13 +113,9 @@ class InterfaceController extends AbstractController
             $entityManager->flush();
             
             // Redirige vers la route 'app_session'
-            // return $this->redirectToRoute('app_session');
+            return $this->redirectToRoute('app_session');
             
-            // Retourner une réponse HTTP 200 (OK)
-            return new Response('', 200);
             $this->addFlash('success', 'La session à été ajoutée/modifiée');
-
-
         }
         return $this->render('session/edit.html.twig', [
             'form' => $form,
@@ -142,9 +138,8 @@ class InterfaceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Exécute les requêtes pour enregistrer les modifications de la session dans la base de données (UPDATE)
             $entityManager->flush();
-
-            // Retourner une réponse HTTP 200 (OK)
-            return new Response('', 200);
+            
+            return $this->redirectToRoute('app_session');
         }
 
         return $this->render('session/edit.html.twig', [
