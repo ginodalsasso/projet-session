@@ -46,18 +46,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function editSessionRequest(sessionId) {
-    var xhr = new XMLHttpRequest();
-
+    var xhr = new XMLHttpRequest(); //instance de l'objet XMLHttpRequest pour effectuer la requête AJAX
     xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                // La requête a réussi
-                // Redirection vers la route 'app_session'
-                window.location.href = '/session';
+        // Vérification si la requête est terminé
+        if (xhr.readyState === XMLHttpRequest.DONE) { 
+            if (xhr.status === 200 || xhr.status === 0) { // Vérification si la requête a abouti
+                window.location.href = '/session'; // La requête a réussi, Redirection vers la route 'app_session'
             } else {
-                // La requête a échoué
-                console.error("Erreur de requête: " + xhr.status);
-                // Afficher un message d'erreur
                 alert("Une erreur est survenue lors de l'ajout/modification de la session.");
             }
         }
@@ -68,8 +63,8 @@ function editSessionRequest(sessionId) {
 }
 
 
-//Requète Ajax pour la soustraction d'un module (en javascript) --------------------------------------
-// // Attend que le DOM soit entièrement chargé
+// Requète Ajax pour la soustraction d'un module (en javascript) --------------------------------------
+// Attend que le DOM soit entièrement chargé
 // document.addEventListener('DOMContentLoaded', function() {
 //     var deleteButtons = document.querySelectorAll('.delete-module-btn');
 //     // Ajoute un écouteur d'événements à chaque bouton

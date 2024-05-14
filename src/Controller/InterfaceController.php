@@ -92,7 +92,6 @@ class InterfaceController extends AbstractController
     // affichage et création d'une session
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/editSession', name: 'app_addSession')]
-    #[Route('/session/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function add_editSession(Session $session = null, EntityManagerInterface $entityManager, Request $request): Response
     {   
         //si la session n'existe pas alors
@@ -113,15 +112,41 @@ class InterfaceController extends AbstractController
             // Exécute les requêtes pour enregistrer la nouvelle session dans la base de données (INSERT)           
             $entityManager->flush();
             
-            $this->addFlash('success', 'La session à été ajoutée/modifiée');
             // Redirige vers la route 'app_session'
             // return $this->redirectToRoute('app_session');
             
             // Retourner une réponse HTTP 200 (OK)
             return new Response('', 200);
+            $this->addFlash('success', 'La session à été ajoutée/modifiée');
 
 
         }
+        return $this->render('session/edit.html.twig', [
+            'form' => $form,
+            'session' => $session
+        ]);
+    }
+
+    // Méthode pour éditer une session existante
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/session/{id}/editSession', name: 'app_editSession', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function editSession(Session $session, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        // Crée un formulaire pour la session existante en utilisant le formulaire CreateSessionType
+        $form = $this->createForm(CreateSessionType::class, $session);
+
+        // Gère la soumission du formulaire
+        $form->handleRequest($request);
+
+        // Vérifie si le formulaire a été soumis et est valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Exécute les requêtes pour enregistrer les modifications de la session dans la base de données (UPDATE)
+            $entityManager->flush();
+
+            // Retourner une réponse HTTP 200 (OK)
+            return new Response('', 200);
+        }
+
         return $this->render('session/edit.html.twig', [
             'form' => $form,
             'session' => $session

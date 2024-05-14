@@ -9,14 +9,14 @@
     <div class="card">
         {# form étant une methode native de symfony, et en argument la variable $form #}
         {# {{ form(form) }} #}
-        {{ form_start(form, {'attr': {'class': "editSessionForm"}}) }}
-        {{ form_row(form.nomSession) }}
-        {{ form_row(form.nbPlaces) }}
-        {{ form_row(form.dateDebut) }}
-        {{ form_row(form.dateFin) }}
-        {{ form_row(form.formation) }}
-        {{ form_row(form.save) }}
-    {{ form_end(form) }}
+        {{ form_start(form, {'attr': {'class': "editSessionForm", 'data-session-id': session.id}}) }}
+            {{ form_row(form.nomSession) }}
+            {{ form_row(form.nbPlaces) }}
+            {{ form_row(form.dateDebut) }}
+            {{ form_row(form.dateFin) }}
+            {{ form_row(form.formation) }}
+            {{ form_row(form.save)}}
+        {{ form_end(form) }}
     </div>
 
 </div>
