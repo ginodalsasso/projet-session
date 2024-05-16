@@ -39,8 +39,8 @@
                 {{ programme.module.nomModule }} {{ '(' ~ programme.module.categorie.nomCategorie ~ ')'}} <br>
             {% endfor %}
             {% if is_granted('ROLE_ADMIN') %} {# ROLE_ADMIN #}
+                <h2>Liste des stagiaires de la session</h2> 
                 {% for stagiaire in session.stagiaires %}
-                    <h2>Liste des stagiaires de la session</h2>
                     {{ stagiaire ~' '}} <br>
                 {% endfor %}
             {% endif %}
